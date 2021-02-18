@@ -13,6 +13,7 @@ would be the right tool to choose.
 ## Quick Start:
 
 > Prereq - Docker is required; oneamex/one-app-dev image is pulled down.
+> Prereq - Please ensure you have react-dev-tools installed as an extension for your browser
 
 install:
 

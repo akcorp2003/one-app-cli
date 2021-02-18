@@ -72,6 +72,10 @@ export function createHotModuleWebpackConfig({
         filename: '[name]/[name].js',
         hotUpdateChunkFilename: '[name]/[id].[hash].hot-update.js',
         publicPath: `/${publicPath}/`,
+        library: 'oneAppHmr',
+      },
+      optimization: {
+        runtimeChunk: 'single',
       },
       resolve: {
         mainFields: ['module', 'browser', 'main'],
@@ -91,7 +95,7 @@ export function createHotModuleWebpackConfig({
       },
       module: {
         rules: [
-          jsxLoader({ plugins: ['react-refresh/babel'] }),
+          jsxLoader({ plugins: [require.resolve('react-refresh/babel')] }),
           cssLoader,
           fileLoader,
         ],
@@ -104,11 +108,6 @@ export function createHotModuleWebpackConfig({
           'global.BROWSER': JSON.stringify(true),
         }),
         new webpack.HotModuleReplacementPlugin(),
-        new ReactRefreshWebpackPlugin({
-          overlay: {
-            sockIntegration: 'whm',
-          },
-        }),
         // source injection
         new HotHolocronModulePlugin({
           rootModuleName,
@@ -119,9 +118,15 @@ export function createHotModuleWebpackConfig({
         new ExtractCssChunks({
           filename: '[name]/[name].css',
         }),
+        new ReactRefreshWebpackPlugin({
+          library: 'oneAppHmr',
+          overlay: {
+            sockIntegration: 'whm',
+          },
+        }),
       ].concat(
         languagePacksToCopy.length > 0
-        // copies (and updates) the language packs for a module
+          // copies (and updates) the language packs for a module
           ? new CopyPlugin({
             patterns: languagePacksToCopy,
           })

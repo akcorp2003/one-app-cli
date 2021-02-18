@@ -81,8 +81,8 @@ export function createOneAppExternals(providedExternals = []) {
 export function createHotModuleEntry({ moduleName, modulePath } = {}) {
   return {
     [moduleName]: [
-      'react-refresh/runtime',
-      'webpack-hot-middleware/client',
+      // 'webpack-hot-middleware/client',
+      require.resolve('react-refresh/runtime'),
       `${modulePath}/src/index.js`,
     ],
   };

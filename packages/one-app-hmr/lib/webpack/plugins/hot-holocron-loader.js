@@ -24,7 +24,7 @@ const modify = (src, { moduleName, rootModuleName, externals }) => {
           'import wrapper from \'@americanexpress/one-app-hmr/lib/webpack/components/HolocronHmrWrapper.jsx\';',
           `${varName}.moduleName = "${moduleName}";`,
           `const HotHolocronModule = wrapper(${varName});`,
-          'export default HotHolocronModule',
+          'export default HotHolocronModule;',
         ];
 
         if (rootModuleName === moduleName && externals.length > 0) {

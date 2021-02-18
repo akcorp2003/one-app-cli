@@ -59,7 +59,6 @@ export async function getPackageJson(modulePath) {
       version: moduleVersion,
     },
   } = await readPkgUp({ cwd: modulePath });
-
   return {
     oneAmexConfig,
     moduleName,
@@ -87,7 +86,7 @@ const getOneAmexConfig = (oneAmexConfig, moduleName) => {
 };
 const getLocalModules = (modulePath, hmr, modules) => (hmr.modules || modules || [])
   .map((pathName) => path.resolve(modulePath, pathName))
-  .filter((pathName) => pathName !== modulePath)
+  // .filter((pathName) => pathName !== modulePath)
   .filter((pathName) => fs.existsSync(pathName));
 const getLanguagePacks = (modulePath, hmr) => []
   .concat(hmr.languagePacks || [], getDefaultLocalesPath(modulePath))

@@ -16,15 +16,16 @@ import hmrServer from '../../lib/server';
 
 jest.mock('../../lib/logs');
 jest.mock('../../lib/html/middleware');
-
 jest.mock('../../lib/webpack', () => ({
-  loadWebpackMiddleware: async () => ({
-    publish: jest.fn(),
-    devMiddleware: {
-      waitUntilValid: jest.fn((callback) => callback),
-    },
-    hotMiddleware: jest.fn(),
-  }),
+  loadWebpackMiddleware() {
+    return {
+      publish: jest.fn(),
+      devMiddleware: {
+        waitUntilValid: jest.fn(),
+      },
+      hotMiddleware: jest.fn(),
+    };
+  },
 }));
 
 jest.mock('express', () => {

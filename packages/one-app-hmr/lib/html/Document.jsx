@@ -13,10 +13,8 @@
  */
 
 import React from 'react';
-import { fromJS } from 'immutable';
-import transit from 'transit-immutable-js';
 
-import { getPublicPath } from '../webpack/utility';
+import { createInitialState } from './utility';
 
 /* eslint-disable react/prop-types */
 export default function Document({
@@ -28,18 +26,11 @@ export default function Document({
   errorReportingUrl,
 } = {}) {
   /* eslint-enable react/prop-types */
-  const state = transit.toJSON(
-    fromJS({
-      config: {
-        cdnUrl: getPublicPath(),
-        rootModuleName,
-        reportingUrl: errorReportingUrl,
-      },
-      intl: {
-        activeLocale: lang,
-      },
-    })
-  );
+  const state = createInitialState({
+    rootModuleName,
+    errorReportingUrl,
+    lang,
+  });
 
   return (
     <html lang={lang}>
@@ -70,12 +61,12 @@ export default function Document({
         <script src="/static/app/app~vendors.js" />
         <script src="/static/app/runtime.js" />
         <script src="/static/app/vendors.js" />
-        <script src="/static/app/i18n/en-us.js" />
+        <script src={`/static/app/i18n/${lang.toLowerCase()}.js`} />
         {React.Children.toArray(
           externals.map(({ src }) => <script src={src} />)
         )}
         {React.Children.toArray(
-          modules.map(({ src }) => <script src={src} crossOrigin="anonymous" />)
+          modules.map(({ src }) => <script src={src} />)
         )}
         <script src="/static/app/app.js" />
       </body>
