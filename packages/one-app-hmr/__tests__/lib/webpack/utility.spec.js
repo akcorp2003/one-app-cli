@@ -12,8 +12,10 @@
  * under the License.
  */
 
-import * as nodeAPI from '../../lib/main';
+import { createMinifyConfig } from '../../../lib/webpack/utility';
 
-test('exports all node API functions', () => {
-  expect(Object.keys(nodeAPI)).toMatchSnapshot();
+describe('createMinifyConfig', () => {
+  test('returns the optimization webpack config for minifying the output', () => {
+    expect(createMinifyConfig()).toMatchSnapshot();
+  });
 });

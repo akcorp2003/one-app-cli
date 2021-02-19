@@ -12,8 +12,10 @@
  * under the License.
  */
 
-import * as nodeAPI from '../../lib/main';
+import { createDLLConfig } from '../../../lib/webpack/dll';
 
-test('exports all node API functions', () => {
-  expect(Object.keys(nodeAPI)).toMatchSnapshot();
+describe('createDLLConfig', () => {
+  test('returns the optimization webpack config for minifying the output', () => {
+    expect(createDLLConfig()).toMatchSnapshot();
+  });
 });

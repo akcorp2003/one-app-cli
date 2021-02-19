@@ -24,6 +24,9 @@ module.exports = {
     '!packages/*/test-utils.js',
     '!packages/*/test-results/**',
     '!packages/generator-one-app-module/generators/app/templates/**',
+    // TODO: remove after hmr testing in place
+    'packages/one-app-hmr/bin/*.js',
+    'packages/one-app-hmr/lib/**',
   ],
   coverageThreshold: {
     global: {

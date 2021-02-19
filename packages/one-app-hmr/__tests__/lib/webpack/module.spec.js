@@ -12,27 +12,10 @@
  * under the License.
  */
 
-import { fromJS } from 'immutable';
-import transit from 'transit-immutable-js';
+import { createHotModuleWebpackConfig } from '../../../lib/webpack/module';
 
-import { getPublicPath } from '../webpack/utility';
-
-// eslint-disable-next-line import/prefer-default-export
-export function createInitialState({
-  rootModuleName,
-  errorReportingUrl,
-  lang,
-}) {
-  return transit.toJSON(
-    fromJS({
-      config: {
-        cdnUrl: getPublicPath(),
-        rootModuleName,
-        reportingUrl: errorReportingUrl,
-      },
-      intl: {
-        activeLocale: lang,
-      },
-    })
-  );
-}
+describe('createHotModuleWebpackConfig', () => {
+  test('returns the optimization webpack config for minifying the output', () => {
+    expect(createHotModuleWebpackConfig({})).toMatchSnapshot();
+  });
+});

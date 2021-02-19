@@ -13,5 +13,5 @@
  */
 
 export { createDLLConfig } from './dll';
+export { buildExternalsDLL } from './builds';
 export { createHotModuleWebpackConfig } from './module';
-export { loadWebpackMiddleware, buildExternalsDLL } from './middleware';

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express Travel Related Services Company, Inc.
+ * Copyright 2021 American Express Travel Related Services Company, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -11,15 +11,3 @@
  * or implied. See the License for the specific language governing permissions and limitations
  * under the License.
  */
-
-import React from 'react';
-import ReactDOM from 'react-dom/server';
-import importJsx from 'import-jsx';
-
-const { default: Document } = importJsx('./Document.jsx');
-
-export default function renderDocument(props) {
-  return '<!DOCTYPE html>'.concat(
-    ReactDOM.renderToStaticMarkup(React.createElement(Document, props))
-  );
-}

@@ -12,8 +12,7 @@
  * under the License.
  */
 
-import * as nodeAPI from '../../lib/main';
-
-test('exports all node API functions', () => {
-  expect(Object.keys(nodeAPI)).toMatchSnapshot();
-});
+// eslint-disable-next-line import/prefer-default-export
+export function isDevelopment() {
+  return process.env.NODE_ENV === 'development';
+}

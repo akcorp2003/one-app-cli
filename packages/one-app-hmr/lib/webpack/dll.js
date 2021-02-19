@@ -17,33 +17,30 @@ import merge from 'webpack-merge';
 
 import {
   isDevelopment,
-  getContext,
+  getContextPath,
   getStaticPath,
-  createOneAppExternals,
-  createMinifyConfig,
-} from './utility';
-import {
-  jsxLoader,
-} from './loaders';
+} from '../utils';
+import { createOneAppExternals, createMinifyConfig } from './utility';
+import { jsxLoader } from './loaders';
 
 // eslint-disable-next-line import/prefer-default-export
 export function createDLLConfig({
   isDev = isDevelopment(),
-  dllAsReference = false,
+  useAsReference = false,
   dllName = 'externals',
-  dllPath = getStaticPath(`.${dllName}.dll.json`),
-  dllVendors = createOneAppExternals(),
-  dllExternals = [],
+  manifestPathName = getStaticPath(`.${dllName}.dll.json`),
+  entries = createOneAppExternals(),
+  externals = [],
 } = {}) {
   return {
-    ...dllAsReference
+    ...useAsReference
       ? {}
       : merge(
         createMinifyConfig({ isDev }),
         {
           mode: isDev ? 'development' : 'production',
-          entry: { [dllName]: dllVendors },
-          externals: dllExternals,
+          entry: { [dllName]: entries },
+          externals,
           output: {
             path: getStaticPath(),
             filename: 'vendor/[name].js',
@@ -54,19 +51,19 @@ export function createDLLConfig({
           },
         }
       ),
-    plugins: dllAsReference
+    plugins: useAsReference
       ? [
         new webpack.DllReferencePlugin({
-          context: getContext(),
+          context: getContextPath(),
           name: dllName,
-          manifest: dllPath,
+          manifest: manifestPathName,
         }),
       ]
       : [
         new webpack.DllPlugin({
-          context: getContext(),
+          context: getContextPath(),
           name: dllName,
-          path: dllPath,
+          path: manifestPathName,
         }),
       ],
   };

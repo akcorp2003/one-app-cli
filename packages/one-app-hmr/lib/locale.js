@@ -14,24 +14,22 @@
 
 import path from 'path';
 import chokidar from 'chokidar';
-import { execSync } from 'child_process';
 
 import {
   debug, log, warn, time, palegreen,
 } from './logs';
+import { addLanguagePacks } from './utils/language-packs';
 
 export function printLocale() {
   return palegreen('locale');
 }
 
-export function buildHotModuleLocale(modulePath) {
-  return execSync('bundle-module-locale', { cwd: modulePath });
-}
-
 export function updateModuleBundle(fileName) {
   const [modulePath] = fileName.split('/locale/');
+  const moduleName = modulePath.split('/').reverse()[0];
+  const langPacksLoaded = addLanguagePacks({ modulePath, moduleName });
   // TODO: update language packs individually, rather than in bulk per module
-  log([printLocale(), buildHotModuleLocale(modulePath).toString().trim()].join(' - '));
+  log([printLocale(), `loaded lang packs for ${langPacksLoaded.join(', ')}`].join(' - '));
 }
 
 export function getModuleInfoFromLocalePath(filePath) {

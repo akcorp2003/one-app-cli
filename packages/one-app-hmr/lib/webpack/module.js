@@ -15,8 +15,6 @@
 import path from 'path';
 import webpack from 'webpack';
 import merge from 'webpack-merge';
-import CopyPlugin from 'copy-webpack-plugin';
-import ExtractCssChunks from 'extract-css-chunks-webpack-plugin';
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 
 import HotHolocronModulePlugin from './plugins/hot-holocron';
@@ -31,7 +29,6 @@ import {
   fileLoader,
 } from './loaders';
 import { createDLLConfig } from './dll';
-import { debug } from '../logs';
 
 // eslint-disable-next-line import/prefer-default-export
 export function createHotModuleWebpackConfig({
@@ -42,26 +39,12 @@ export function createHotModuleWebpackConfig({
   externals = [],
   rootModuleName,
 }) {
-  const languagePacksToCopy = modules
-    .filter(({ languagePacks }) => languagePacks.length > 0)
-    .map(({ moduleName, moduleVersion, modulePath }) => ({
-      from: path.join('**', `${moduleName}.json`),
-      to: `${moduleName}/`,
-      context: path.join(modulePath, 'build', moduleVersion),
-    }));
-
-  const entryConfig = {
-    entry: createHotModuleEntries(modules),
-  };
-
-  debug('Webpack entries configuration used %o', entryConfig);
-
   return merge(
-    entryConfig,
-    externals && externals.length > 0 ? createDLLConfig({
-      dllAsReference: true,
+    externals.length > 0 ? createDLLConfig({
+      useAsReference: true,
     }) : {},
     {
+      entry: createHotModuleEntries(modules),
       externals: createOneAppExternals(externals),
       target: 'web',
       mode: 'development',
@@ -70,9 +53,16 @@ export function createHotModuleWebpackConfig({
       output: {
         path: staticPath,
         filename: '[name]/[name].js',
-        hotUpdateChunkFilename: '[name]/[id].[hash].hot-update.js',
-        publicPath: `/${publicPath}/`,
+        hotUpdateChunkFilename: '[name]/[id].[fullhash].hot-update.js',
+        publicPath,
         library: 'oneAppHmr',
+      },
+      module: {
+        rules: [
+          jsxLoader({ plugins: [require.resolve('react-refresh/babel')] }),
+          cssLoader(),
+          fileLoader(),
+        ],
       },
       optimization: {
         runtimeChunk: 'single',
@@ -88,17 +78,8 @@ export function createHotModuleWebpackConfig({
       resolveLoader: {
         modules: [
           'node_modules',
-          path.resolve(__dirname, '..', '..', 'node_modules'),
-        ],
-        extensions: ['.js', '.json'],
-        mainFields: ['loader', 'main'],
-      },
-      module: {
-        rules: [
-          jsxLoader({ plugins: [require.resolve('react-refresh/babel')] }),
-          cssLoader,
-          fileLoader,
-        ],
+          path.relative(context, path.resolve(__dirname, '..', '..', 'node_modules')),
+        ].concat(modules.map(({ modulePath }) => path.join(modulePath, 'node_modules'))),
       },
       plugins: [
         new webpack.EnvironmentPlugin({
@@ -114,24 +95,13 @@ export function createHotModuleWebpackConfig({
           modules,
           externals,
         }),
-        // css/styles
-        new ExtractCssChunks({
-          filename: '[name]/[name].css',
-        }),
         new ReactRefreshWebpackPlugin({
           library: 'oneAppHmr',
           overlay: {
             sockIntegration: 'whm',
           },
         }),
-      ].concat(
-        languagePacksToCopy.length > 0
-          // copies (and updates) the language packs for a module
-          ? new CopyPlugin({
-            patterns: languagePacksToCopy,
-          })
-          : []
-      ),
+      ],
     }
   );
 }

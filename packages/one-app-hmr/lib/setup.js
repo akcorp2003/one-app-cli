@@ -17,8 +17,8 @@ import path from 'path';
 import { exec, execSync, spawnSync } from 'child_process';
 
 import {
-  getStaticPath, STATIC_DIR, TEMP_DIR,
-} from './webpack/utility';
+  getOneAppPath, STATIC_DIR, TEMP_DIR,
+} from './utils';
 import { error, time } from './logs';
 
 export function loadOneAppStaticsFromDocker({ tempDir, appDir, dockerImage } = {}) {
@@ -65,8 +65,8 @@ export function preloadOneAppStatics(config = {}) {
   // TODO: double check if we still need to do this
   // overwrite eval to allow HMR
   fs.writeFileSync(
-    getStaticPath('app/app.js'),
-    fs.readFileSync(getStaticPath('app/app.js')).toString().replace("['eval', 'execScript']", '[]')
+    getOneAppPath('app.js'),
+    fs.readFileSync(getOneAppPath('app.js')).toString().replace("['eval', 'execScript']", '[]')
   );
 }
 

@@ -13,9 +13,8 @@
  */
 
 import path from 'path';
-import ExtractCssChunks from 'extract-css-chunks-webpack-plugin';
 
-export const fileLoader = {
+export const fileLoader = () => ({
   test: /\.(woff|woff2|ttf|eot|svg|png|jpg|jpeg|gif|webm)(\?.*)?$/,
   use: [{
     loader: 'file-loader',
@@ -23,28 +22,21 @@ export const fileLoader = {
       name: '../assets/[name].[ext]',
     },
   }],
-};
+});
 
-export const cssLoader = {
+export const cssLoader = () => ({
   test: /\.(sa|sc|c)ss$/,
   exclude: /node_modules/,
   use: [
     {
-      loader: ExtractCssChunks.loader,
-      options: {
-        hmr: true,
-        esModule: true,
-        modules: {
-          namedExport: true,
-        },
-      },
+      loader: 'style-loader',
     },
     {
       loader: 'css-loader',
       options: {
         importLoaders: 2,
         modules: {
-          localIdentName: '[name]__[local]___[hash:base64:5]',
+          localIdentName: '[name]__[local]___[contenthash:base64:5]',
         },
       },
     },
@@ -68,13 +60,14 @@ export const cssLoader = {
       },
     },
   ],
-};
+});
 
 export const jsxLoader = ({ plugins = [], presets = [] } = {}) => ({
   test: /\.jsx?$/,
+  exclude: /node_modules/,
   use: [
     {
-      loader: 'babel-loader',
+      loader: require.resolve('babel-loader'),
       options: {
         cwd: path.resolve(__dirname, '..'),
         cacheDirectory: true,
@@ -84,6 +77,7 @@ export const jsxLoader = ({ plugins = [], presets = [] } = {}) => ({
           [
             'amex',
             {
+              modern: true,
               'preset-env': {
                 modules: false,
               },

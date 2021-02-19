@@ -13,9 +13,11 @@
  */
 
 export { createConfig } from './config';
-export { default as renderDocument } from './html';
-export { createHotModuleRenderingMiddleware } from './html/middleware';
+export { setupStatics } from './setup';
 export { setLogLevel } from './logs';
 export { default as hmrServer } from './server';
-export { setupStatics } from './setup';
-export { loadWebpackMiddleware } from './webpack';
+export {
+  createHotModuleRenderingMiddleware,
+  createModulesProxyRelayMiddleware,
+  loadWebpackMiddleware,
+} from './middleware';

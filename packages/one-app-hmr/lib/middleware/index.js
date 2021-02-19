@@ -12,8 +12,6 @@
  * under the License.
  */
 
-import * as nodeAPI from '../../lib/main';
-
-test('exports all node API functions', () => {
-  expect(Object.keys(nodeAPI)).toMatchSnapshot();
-});
+export { createHotModuleRenderingMiddleware } from './html';
+export { createModulesProxyRelayMiddleware } from './proxy-relay';
+export { loadWebpackMiddleware } from './webpack';

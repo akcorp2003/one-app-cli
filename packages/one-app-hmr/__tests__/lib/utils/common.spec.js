@@ -12,8 +12,22 @@
  * under the License.
  */
 
-import * as nodeAPI from '../../lib/main';
+import { isDevelopment } from '../../../lib/utils/common';
 
-test('exports all node API functions', () => {
-  expect(Object.keys(nodeAPI)).toMatchSnapshot();
+const { NODE_ENV } = process.env;
+
+describe('isDevelopment', () => {
+  beforeEach(() => {
+    process.env.NODE_ENV = NODE_ENV;
+  });
+
+  test('returns true when NODE_ENV is set to "development"', () => {
+    process.env.NODE_ENV = 'development';
+    expect(isDevelopment()).toBe(true);
+  });
+
+  test('returns false when NODE_ENV is set to "production"', () => {
+    process.env.NODE_ENV = 'production';
+    expect(isDevelopment()).toBe(false);
+  });
 });

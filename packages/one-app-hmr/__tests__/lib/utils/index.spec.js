@@ -12,8 +12,8 @@
  * under the License.
  */
 
-import * as nodeAPI from '../../lib/main';
+import * as utils from '../../../lib/utils';
 
 test('exports all node API functions', () => {
-  expect(Object.keys(nodeAPI)).toMatchSnapshot();
+  expect(Object.keys(utils)).toMatchSnapshot();
 });

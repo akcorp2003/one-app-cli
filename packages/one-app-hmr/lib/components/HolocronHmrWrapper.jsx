@@ -48,6 +48,7 @@ export default function createHolocronHmrWrapper(Module) {
             }
             break;
           default:
+            window.reload();
             break;
         }
       });

@@ -12,8 +12,10 @@
  * under the License.
  */
 
-import * as nodeAPI from '../../lib/main';
+import path from 'path';
+import { createFsFromVolume, Volume } from 'memfs';
 
-test('exports all node API functions', () => {
-  expect(Object.keys(nodeAPI)).toMatchSnapshot();
-});
+export const vol = new Volume();
+export const vfs = createFsFromVolume(vol);
+
+vfs.join = path.join.bind(path);

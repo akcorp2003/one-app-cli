@@ -14,9 +14,8 @@
 
 import express from 'express';
 
-import { loadWebpackMiddleware } from './webpack';
-import { getStaticPath } from './webpack/utility';
-import { createHotModuleRenderingMiddleware } from './html/middleware';
+import { createModuleMap, getPublicUrl, getStaticPath } from './utils';
+import { loadWebpackMiddleware, createHotModuleRenderingMiddleware, createModulesProxyRelayMiddleware } from './middleware';
 import { loadParrotMiddleware } from './parrot';
 import { loadLanguagePacks } from './locale';
 import {
@@ -33,7 +32,7 @@ export default async function hmrServer({
   publicPath,
   staticPath,
   rootModuleName,
-  remoteModuleMap,
+  remoteModuleMap: remoteModuleMapUrl,
   modules,
   externals,
   scenarios,
@@ -44,6 +43,12 @@ export default async function hmrServer({
   info('Starting HMR server');
   info(`Root Holocron module: ${orange(rootModuleName)}`);
   info(`Holocron modules loaded: ${modules.map(({ moduleName }) => orange(`"${moduleName}"`)).join(', ')}`);
+
+  const {
+    moduleMap,
+    localModuleMap,
+    remoteModuleMap,
+  } = await createModuleMap({ modules, remoteModuleMapUrl });
 
   const serverAddress = `http://localhost:${port}/`;
   const {
@@ -57,25 +62,23 @@ export default async function hmrServer({
     modules,
     externals,
     rootModuleName,
-  });
-
-  devMiddleware.waitUntilValid(() => {
-    info(`${orange('🔥 HMR server is ready')} - visit "${yellow(serverAddress)}" to start!\n`);
+    serverAddress,
   });
 
   const app = express();
 
   app
+    .use(createModulesProxyRelayMiddleware({ moduleMap, localModuleMap, remoteModuleMap }))
     .use(devMiddleware)
     .use(hotMiddleware)
-    .use('/static', express.static(getStaticPath()));
+    .use(getPublicUrl(), express.static(getStaticPath()));
 
   await loadLanguagePacks(app, { languagePacks, useLanguagePacks, publish });
   await loadParrotMiddleware(app, { scenarios, useParrotMiddleware, publish });
 
   const renderMiddleware = await createHotModuleRenderingMiddleware({
     rootModuleName,
-    remoteModuleMap,
+    moduleMap,
     errorReportingUrl: '/error',
   });
 

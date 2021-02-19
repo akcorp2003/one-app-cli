@@ -12,8 +12,26 @@
  * under the License.
  */
 
-import * as nodeAPI from '../../lib/main';
+import {
+  fileLoader,
+  cssLoader,
+  jsxLoader,
+} from '../../../lib/webpack/loaders';
 
-test('exports all node API functions', () => {
-  expect(Object.keys(nodeAPI)).toMatchSnapshot();
+describe('fileLoader', () => {
+  test('returns loader config for file types', () => {
+    expect(fileLoader()).toMatchSnapshot();
+  });
+});
+
+describe('cssLoader', () => {
+  test('returns loader config for CSS files', () => {
+    expect(cssLoader()).toMatchSnapshot();
+  });
+});
+
+describe('jsxLoader', () => {
+  test('returns loader config for JavaScript files', () => {
+    expect(jsxLoader()).toMatchSnapshot();
+  });
 });

@@ -12,37 +12,26 @@
  * under the License.
  */
 
-import path from 'path';
-
 import TerserPlugin from 'terser-webpack-plugin';
 
-export const STATIC_DIR = 'static';
-export const MODULES_DIR = 'modules';
-export const EXTERNAL_DIR = 'vendor';
-export const TEMP_DIR = '.temp';
+import { isDevelopment } from '../utils';
 
-export function isDevelopment() {
-  return process.env.NODE_ENV === 'development';
-}
-
-export function getContext() {
-  return process.cwd();
-}
-
-export function getStaticPath(filePath = '', context) {
-  return path.resolve(context || getContext(), STATIC_DIR, filePath);
-}
-
-export function getModulesPath(filePath = '', context) {
-  return path.resolve(context || getContext(), STATIC_DIR, MODULES_DIR, filePath);
-}
-
-export function getPublicPath(moduleName) {
-  return [STATIC_DIR, MODULES_DIR].concat(moduleName || []).join('/');
-}
-
-export function getExternalsPublicPath(resource) {
-  return [STATIC_DIR, EXTERNAL_DIR].concat(resource || []).join('/');
+// eslint-disable-next-line camelcase, import/prefer-default-export
+export function createMinifyConfig({ isDev = isDevelopment(), keep_fnames = true } = {}) {
+  return {
+    devtool: isDev && 'eval-cheap-source-map',
+    optimization: {
+      minimize: !isDev,
+      minimizer: [
+        new TerserPlugin({
+          test: /\.jsx?$/i,
+          terserOptions: {
+            keep_fnames,
+          },
+        }),
+      ],
+    },
+  };
 }
 
 export function createExternalEntry([packageName, varName] = []) {
@@ -81,7 +70,7 @@ export function createOneAppExternals(providedExternals = []) {
 export function createHotModuleEntry({ moduleName, modulePath } = {}) {
   return {
     [moduleName]: [
-      // 'webpack-hot-middleware/client',
+      require.resolve('webpack-hot-middleware/client'),
       require.resolve('react-refresh/runtime'),
       `${modulePath}/src/index.js`,
     ],
@@ -92,22 +81,4 @@ export function createHotModuleEntries(modules = []) {
   return modules
     .map(createHotModuleEntry)
     .reduce((map, next) => ({ ...map, ...next }), {});
-}
-
-// eslint-disable-next-line camelcase
-export function createMinifyConfig({ isDev = isDevelopment(), keep_fnames = true } = {}) {
-  return {
-    devtool: isDev && 'eval-cheap-source-map',
-    optimization: {
-      minimize: !isDev,
-      minimizer: [
-        new TerserPlugin({
-          test: /\.jsx?$/i,
-          terserOptions: {
-            keep_fnames,
-          },
-        }),
-      ],
-    },
-  };
 }

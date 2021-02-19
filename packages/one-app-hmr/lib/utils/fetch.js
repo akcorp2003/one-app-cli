@@ -12,8 +12,13 @@
  * under the License.
  */
 
-import * as nodeAPI from '../../lib/main';
+import crossFetch from 'cross-fetch';
+import ProxyAgent from 'proxy-agent';
 
-test('exports all node API functions', () => {
-  expect(Object.keys(nodeAPI)).toMatchSnapshot();
-});
+// eslint-disable-next-line import/prefer-default-export
+export function fetch(remoteUrl) {
+  return crossFetch(remoteUrl, {
+    headers: { connection: 'keep-alive' },
+    agent: new ProxyAgent(),
+  });
+}

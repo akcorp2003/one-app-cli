@@ -13,8 +13,11 @@
  */
 
 import path from 'path';
+import { NormalModule } from 'webpack';
 
 // TODO: better regexp to match module entry point, maybe concat module names and create regexp
+// look at compilation "module" from loader hook to identify if entry point
+// (excluding entries from node_modules)
 const moduleRegExp = /\/src\/index\.js$/;
 export default class HotHolocronModulePlugin {
   constructor(options = {}) {
@@ -23,11 +26,11 @@ export default class HotHolocronModulePlugin {
 
   apply(compiler) {
     compiler.hooks.compilation.tap('HotHolocronModulePlugin', (compilation) => {
-      compilation.hooks.normalModuleLoader.tap('HotHolocronModulePlugin', (loaderContext, module) => {
+      NormalModule.getCompilationHooks(compilation).loader.tap('HotHolocronModulePlugin', (ctx, module) => {
         const { test = moduleRegExp, rootModuleName, externals } = this.options;
         if (test.test(module.userRequest)) {
-          module.loaders.push({
-            loader: path.resolve(__dirname, 'hot-holocron-loader.js'),
+          module.loaders.unshift({
+            loader: path.join(__dirname, 'hot-holocron-loader.js'),
             options: {
               externals,
               rootModuleName,

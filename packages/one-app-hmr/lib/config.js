@@ -16,7 +16,7 @@ import fs from 'fs';
 import path from 'path';
 import readPkgUp from 'read-pkg-up';
 
-import { getContext, getModulesPath, getPublicPath } from './webpack/utility';
+import { getContextPath, getModulesPath, getPublicModulesUrl } from './utils';
 import { debug } from './logs';
 
 export const defaultConfig = {
@@ -34,13 +34,13 @@ export const defaultConfig = {
   useLanguagePacks: true,
 };
 
-export function getDefaultScenariosPath(modulePath = getContext()) {
+export function getDefaultScenariosPath(modulePath = getContextPath()) {
   const scenariosPath = path.resolve(modulePath, 'mock', 'scenarios.js');
   if (fs.existsSync(scenariosPath)) return scenariosPath;
   return [];
 }
 
-export function getDefaultLocalesPath(modulePath = getContext()) {
+export function getDefaultLocalesPath(modulePath = getContextPath()) {
   const localesPath = path.resolve(modulePath, 'locale');
   if (fs.existsSync(localesPath)) return modulePath;
   return [];
@@ -84,10 +84,12 @@ const getOneAmexConfig = (oneAmexConfig, moduleName) => {
     requiredExternals,
   };
 };
-const getLocalModules = (modulePath, hmr, modules) => (hmr.modules || modules || [])
-  .map((pathName) => path.resolve(modulePath, pathName))
-  // .filter((pathName) => pathName !== modulePath)
-  .filter((pathName) => fs.existsSync(pathName));
+const getLocalModules = (modulePath, hmr, modules) => [...new Set(
+  (hmr.modules || modules || [])
+    .map((pathName) => path.resolve(modulePath, pathName))
+    // .filter((pathName) => pathName !== modulePath)
+    .filter((pathName) => fs.existsSync(pathName))
+)];
 const getLanguagePacks = (modulePath, hmr) => []
   .concat(hmr.languagePacks || [], getDefaultLocalesPath(modulePath))
   .filter((pathName) => fs.existsSync(pathName));
@@ -100,7 +102,7 @@ const getExternals = (hmr, providedExternals, requiredExternals) => [...new Set(
   providedExternals || [],
   requiredExternals || []
 )).values()];
-export async function getModuleConfig(modulePath = getContext()) {
+export async function getModuleConfig(modulePath = getContextPath()) {
   const { oneAmexConfig, moduleName, moduleVersion } = await getPackageJson(modulePath);
   const {
     modules, rootModuleName, moduleMapUrl, dockerImage, hmr, providedExternals, requiredExternals,
@@ -132,8 +134,8 @@ export async function getModuleConfig(modulePath = getContext()) {
 export async function createConfig(initialConfig) {
   const baseConfig = initialConfig || await getModuleConfig();
   const {
-    context = getContext(),
-    publicPath = getPublicPath(),
+    context = getContextPath(),
+    publicPath = getPublicModulesUrl(),
     staticPath = getModulesPath(),
   } = baseConfig;
   const config = {
