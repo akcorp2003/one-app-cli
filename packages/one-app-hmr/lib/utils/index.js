@@ -17,10 +17,6 @@ export {
 } from './common';
 
 export {
-  fetch,
-} from './fetch';
-
-export {
   vol,
   vfs,
 } from './virtual-file-system';
@@ -45,7 +41,9 @@ export {
 export {
   extractLanguageDataFromLocale,
   loadModuleLanguagePacks,
-  addLanguagePacks,
+  addLanguagePacksForModule,
+  addModuleLanguagePack,
+  removeModuleLanguagePack,
 } from './language-packs';
 
 export {

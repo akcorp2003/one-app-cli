@@ -15,8 +15,12 @@
 import express from 'express';
 
 import { createModuleMap, getPublicUrl, getStaticPath } from './utils';
-import { loadWebpackMiddleware, createHotModuleRenderingMiddleware, createModulesProxyRelayMiddleware } from './middleware';
-import { loadParrotMiddleware } from './parrot';
+import {
+  loadWebpackMiddleware,
+  createHotModuleRenderingMiddleware,
+  createModulesProxyRelayMiddleware,
+  loadParrotMiddleware,
+} from './middleware';
 import { loadLanguagePacks } from './locale';
 import {
   info, warn, yellow, orange,

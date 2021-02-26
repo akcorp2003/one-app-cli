@@ -17,7 +17,7 @@ import express from 'express';
 import chokidar from 'chokidar';
 import {
   loadScenarios, getModuleNameFromFilePath, createHotParrotMiddleware, loadParrotMiddleware,
-} from '../../lib/parrot';
+} from '../../../lib/middleware/parrot';
 
 afterEach(() => {
   jest.clearAllMocks();

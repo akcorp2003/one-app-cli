@@ -28,7 +28,7 @@ export function extractLanguageDataFromLocale(languageDataPath) {
   const fileStats = fs.statSync(languageDataPath);
   if (fileStats.isDirectory()) {
     const copy = extractLanguageDataFromLocale(`${languageDataPath}/${copyFileName}`);
-    const links = extractLanguageDataFromLocale(`${languageDataPath}/${linksPathName}`);
+    const links = extractLanguageDataFromLocale(`${languageDataPath}/${linksPathName}`) || {};
     return {
       ...copy,
       links,
@@ -42,7 +42,7 @@ export function extractLanguageDataFromLocale(languageDataPath) {
 }
 
 export function loadModuleLanguagePacks({ modulePath, localePath = localePathName }) {
-  const languagePacksPath = path.resolve(modulePath, localePath);
+  const languagePacksPath = path.join(modulePath, localePath);
   if (fs.existsSync(languagePacksPath)) {
     return fs.readdirSync(languagePacksPath)
       .map((locale) => [
@@ -53,7 +53,7 @@ export function loadModuleLanguagePacks({ modulePath, localePath = localePathNam
   return null;
 }
 
-export function addLanguagePacks({ moduleName, modulePath, localePath }) {
+export function addLanguagePacksForModule({ moduleName, modulePath, localePath }) {
   const languagePacks = loadModuleLanguagePacks({ modulePath, localePath });
   const locales = languagePacks.reduce((map, [locale, langPack]) => ({
     ...map,
@@ -61,4 +61,22 @@ export function addLanguagePacks({ moduleName, modulePath, localePath }) {
   }), {});
   vol.fromJSON(locales, getModulesPath(moduleName));
   return languagePacks.map(([locale]) => locale);
+}
+
+export function addModuleLanguagePack({
+  moduleName, modulePath, locale, localePath = localePathName,
+}) {
+  const langPackPath = path.join(modulePath, localePath, locale);
+  const langPack = extractLanguageDataFromLocale(langPackPath);
+  vol.fromJSON({
+    [[locale, `${moduleName}.json`].join('/')]: JSON.stringify(langPack),
+  }, getModulesPath(moduleName));
+}
+
+export function removeModuleLanguagePack({
+  moduleName, locale,
+}) {
+  const localeFilePath = getModulesPath([moduleName, locale, `${moduleName}.json`].join('/'));
+  vol.unlinkSync(localeFilePath);
+  vol.rmdirSync(localeFilePath.replace(`/${moduleName}.json`, ''));
 }

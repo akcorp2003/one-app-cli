@@ -16,68 +16,90 @@ import path from 'path';
 import chokidar from 'chokidar';
 
 import {
-  debug, log, warn, time, palegreen,
+  debug, log, warn, time, palegreen, orange,
 } from './logs';
-import { addLanguagePacks } from './utils/language-packs';
+import {
+  addLanguagePacksForModule,
+  addModuleLanguagePack,
+  removeModuleLanguagePack,
+} from './utils';
 
-export function printLocale() {
-  return palegreen('locale');
+export function printLocale(message) {
+  return `${palegreen('locale')} - ${message}`;
 }
 
-export function updateModuleBundle(fileName) {
-  const [modulePath] = fileName.split('/locale/');
-  const moduleName = modulePath.split('/').reverse()[0];
-  const langPacksLoaded = addLanguagePacks({ modulePath, moduleName });
-  // TODO: update language packs individually, rather than in bulk per module
-  log([printLocale(), `loaded lang packs for ${langPacksLoaded.join(', ')}`].join(' - '));
+export function printLocaleAction({ locale, moduleName, action = 'added' }) {
+  return log(printLocale(`${orange(`"${locale}"`)} for module ${orange(`"${moduleName}"`)} has been ${action}`));
 }
 
 export function getModuleInfoFromLocalePath(filePath) {
-  const [moduleBasePath, fileBasePath] = filePath.split('/locale/');
-  const [moduleName] = moduleBasePath.split('/').reverse();
-  const [locale] = fileBasePath.split('/');
-  return [moduleName, locale.toLowerCase().replace('.json', '')];
+  const [modulePath, fileBasePath] = filePath.split('/locale/');
+  const [moduleName] = modulePath.split('/').reverse();
+  const [languagePack] = fileBasePath.split('/');
+  const locale = languagePack.toLowerCase().replace('.json', '');
+  return [moduleName, modulePath, locale];
 }
 
-export async function createHotLanguagePacks(modulePaths, publish) {
-  chokidar.watch(modulePaths.map((modulePath) => path.resolve(modulePath, 'locale')), { awaitWriteFinish: true })
-    .on('error', (error) => warn(`${printLocale()} - Language pack watcher error: ${error}`))
-    .on('ready', () => log(`${printLocale()} - Watching language packs`))
-    .on('add', async (fileName) => {
-      const [moduleName, locale] = getModuleInfoFromLocalePath(fileName);
-      log(`${printLocale()} - "${locale}" for module "${moduleName}" has been added`);
-      updateModuleBundle(fileName);
+export function loadLanguagePacksForModule(modulePath) {
+  const [moduleName] = modulePath.split('/').reverse();
+  const langPacksLoaded = addLanguagePacksForModule({ modulePath, moduleName });
+  log(printLocale(`loaded lang packs for ${langPacksLoaded.join(', ')}`));
+}
+
+export function watchLanguagePackFileEvents(watcher, publish) {
+  watcher
+    .on('add', (fileName) => {
+      const [moduleName, modulePath, locale] = getModuleInfoFromLocalePath(fileName);
+      printLocaleAction({ locale, moduleName, action: 'added' });
+      addModuleLanguagePack({ moduleName, modulePath, locale });
       publish({
         action: 'locale:add', path: fileName, moduleName, locale,
       });
     })
-    .on('change', async (fileName) => {
-      const [moduleName, locale] = getModuleInfoFromLocalePath(fileName);
-      log(`${printLocale()} - "${locale}" for module "${moduleName}" has been changed`);
-      updateModuleBundle(fileName);
+    .on('change', (fileName) => {
+      const [moduleName, modulePath, locale] = getModuleInfoFromLocalePath(fileName);
+      printLocaleAction({ locale, moduleName, action: 'changed' });
+      addModuleLanguagePack({ moduleName, modulePath, locale });
       publish({
         action: 'locale:change', path: fileName, moduleName, locale,
       });
     })
-    .on('unlink', async (fileName) => {
-      const [moduleName, locale] = getModuleInfoFromLocalePath(fileName);
-      log(`${printLocale()} - "${locale}" for module "${moduleName}" has been removed`);
-      updateModuleBundle(fileName);
+    .on('unlink', (fileName) => {
+      const [moduleName, modulePath, locale] = getModuleInfoFromLocalePath(fileName);
+      printLocaleAction({ locale, moduleName, action: 'removed' });
+      removeModuleLanguagePack({ moduleName, modulePath, locale });
       publish({
         action: 'locale:remove', path: fileName, moduleName, locale,
       });
     });
 }
 
+export function createHotLanguagePacks(modulePaths, publish) {
+  const watcherOptions = { awaitWriteFinish: true };
+  const watcherPaths = modulePaths.map((modulePath) => path.join(modulePath, 'locale'));
+  const watcher = chokidar.watch(watcherPaths, watcherOptions);
+
+  modulePaths.forEach(loadLanguagePacksForModule);
+
+  watcher
+    .on('error', (error) => warn(printLocale(`Language pack watcher error: ${error}`)))
+    .on('ready', () => {
+      log(printLocale('Watching language packs'));
+      watchLanguagePackFileEvents(watcher, publish);
+    });
+
+  return watcher;
+}
+
 export async function loadLanguagePacks(app, { languagePacks, useLanguagePacks, publish }) {
-  debug(`${printLocale()} "useLanguagePacks" was set to "%s"`, useLanguagePacks);
+  debug(printLocale('"useLanguagePacks" was set to "%s"'), useLanguagePacks);
 
   if (useLanguagePacks && languagePacks.length > 0) {
-    debug(`${printLocale()} Loading language packs %o`, languagePacks);
-    await time(`${printLocale()} - initializing`, () => {
+    debug(printLocale('Loading language packs %o'), languagePacks);
+    await time(printLocale('initializing'), () => {
       createHotLanguagePacks(languagePacks, publish);
     });
   } else {
-    debug(`${printLocale()} Locale folders were not found`);
+    debug(printLocale('Locale folders were not found'));
   }
 }

@@ -26,7 +26,8 @@ function formatPayloadMessage(payload) {
 export default function createHolocronHmrWrapper(Module) {
   const HotModule = hoistStatics((props) => {
     const dispatch = useDispatch();
-    React.useEffect(() => {
+    // eslint-disable-next-line prefer-arrow-callback
+    React.useEffect(function HotHolocronWrapper() {
       console.log(['%c', `one-app-hmr :: Hot Holocron module "${Module.moduleName}" has been loaded.`].join(' '), 'background: #222; color: #bada55');
       subscribe((payload) => {
         switch (payload.action) {

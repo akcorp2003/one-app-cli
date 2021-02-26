@@ -18,7 +18,7 @@ import parrot from 'parrot-middleware';
 
 import {
   debug, log, warn, time, deeppink,
-} from './logs';
+} from '../logs';
 
 export function printParrot() {
   return deeppink('parrot');
@@ -77,8 +77,6 @@ export function createHotParrotMiddleware(scenarios, publish) {
 
   return parrotRouter;
 }
-
-// TODO: GraphQL support
 
 export async function loadParrotMiddleware(app, { scenarios, useParrotMiddleware, publish }) {
   debug('"useParrotMiddleware" was set to "%s"', useParrotMiddleware);

@@ -13,5 +13,6 @@
  */
 
 export { createHotModuleRenderingMiddleware } from './html';
+export { loadParrotMiddleware } from './parrot';
 export { createModulesProxyRelayMiddleware } from './proxy-relay';
 export { loadWebpackMiddleware } from './webpack';
