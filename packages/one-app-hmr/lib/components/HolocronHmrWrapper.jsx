@@ -14,46 +14,14 @@
 
 import React from 'react';
 import { registerModule } from 'holocron';
-import { loadLanguagePack } from '@americanexpress/one-app-ducks';
-import { useDispatch } from 'react-redux';
 import hoistStatics from 'hoist-non-react-statics';
-import { subscribe } from 'webpack-hot-middleware/client';
 
-function formatPayloadMessage(payload) {
-  return ['one-app-hmr :: ', payload.moduleName, payload.action, payload.path].join(' ');
-}
+import useHotMiddlewareSubscriber from './hooks/useHotMiddlewareSubscriber';
 
 export default function createHolocronHmrWrapper(Module) {
-  const HotModule = hoistStatics((props) => {
-    const dispatch = useDispatch();
-    // eslint-disable-next-line prefer-arrow-callback
-    React.useEffect(function HotHolocronWrapper() {
-      console.log(['%c', `one-app-hmr :: Hot Holocron module "${Module.moduleName}" has been loaded.`].join(' '), 'background: #222; color: #bada55');
-      subscribe((payload) => {
-        switch (payload.action) {
-          case 'locale:add':
-          case 'locale:change':
-          case 'locale:remove':
-            if (payload.moduleName === Module.moduleName) {
-              dispatch(loadLanguagePack(payload.moduleName, payload.locale, true))
-                .then(() => {
-                  console.log(['%c', formatPayloadMessage(payload)].join(' '), 'background: #222; color: #bada55');
-                });
-            }
-            break;
-          case 'parrot:add':
-          case 'parrot:change':
-          case 'parrot:remove':
-            if (payload.moduleName === Module.moduleName) {
-              console.log(['%c', formatPayloadMessage(payload)].join(' '), 'background: #222; color: #bada55');
-            }
-            break;
-          default:
-            window.reload();
-            break;
-        }
-      });
-    }, []);
+  // eslint-disable-next-line prefer-arrow-callback
+  const HotModule = hoistStatics(function HolocronHmrWrapper(props) {
+    useHotMiddlewareSubscriber(Module);
     // eslint-disable-next-line react/jsx-props-no-spreading
     return <Module {...props} />;
   }, Module);
