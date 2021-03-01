@@ -28,7 +28,7 @@ export function printLocale(message) {
   return `${palegreen('locale')} - ${message}`;
 }
 
-export function printLocaleAction({ locale, moduleName, action = 'added' }) {
+export function printLocaleAction({ locale, moduleName, action }) {
   return log(printLocale(`${orange(`"${locale}"`)} for module ${orange(`"${moduleName}"`)} has been ${action}`));
 }
 

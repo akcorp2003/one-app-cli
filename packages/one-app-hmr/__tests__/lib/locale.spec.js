@@ -15,9 +15,14 @@ import chokidar from 'chokidar';
 import createDebug from 'debug';
 
 import {
-  updateModuleBundle, getModuleInfoFromLocalePath, createHotLanguagePacks, loadLanguagePacks,
+  watchLanguagePackFileEvents,
+  getModuleInfoFromLocalePath,
+  createHotLanguagePacks,
+  loadLanguagePacks,
 } from '../../lib/locale';
 
+jest.mock('path');
+jest.mock('fs');
 jest.mock('child_process', () => ({
   execSync: () => 'en-US',
 }));
@@ -35,86 +40,107 @@ jest.mock('../../lib/webpack', () => ({
     publish: jest.fn(),
   }),
 }));
+
+jest.mock('../../lib/utils', () => ({
+  addLanguagePacksForModule: jest.fn(() => ['en-US']),
+  removeModuleLanguagePack: jest.fn(),
+  addModuleLanguagePack: jest.fn(),
+}));
 describe('locale build', () => {
   let originalDebugScope;
 
   beforeEach(() => {
-    console.log.mockClear();
-    console.warn.mockClear();
-    console.time.mockClear();
     originalDebugScope = createDebug.disable();
   });
 
   afterEach(() => {
+    console.log.mockClear();
+    console.warn.mockClear();
+    console.time.mockClear();
+    chokidar.on.mock.calls = [];
     createDebug.enable(originalDebugScope);
   });
 
-  test('update module bundle ', () => {
-    const spy = jest.spyOn(console, 'log').mockImplementation();
-    updateModuleBundle('locale/en-US');
-    expect(spy.mock.calls).toMatchSnapshot();
-  });
+  const modules = ['sample-module-1', 'sample-module-2'];
+  const consoleWarnSpy = jest.spyOn(console, 'warn')
+    .mockImplementation();
+  const consoleLogSpy = jest.spyOn(console, 'log')
+    .mockImplementation();
+  const consoleTimeSpy = jest.spyOn(console, 'time')
+    .mockImplementation();
+  const publish = jest.fn();
   test('gets module-name and locale from file path', () => {
-    expect(getModuleInfoFromLocalePath('sample-module/locale/en-US.json')).toEqual(['sample-module', 'en-us']);
+    expect(getModuleInfoFromLocalePath('sample-module/locale/en-US.json'))
+      .toEqual(['sample-module', 'sample-module', 'en-us']);
   });
-  describe('hot reload language-packs', () => {
-    const modules = ['sample-module-1', 'sample-module-2'];
-    const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
-    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
-    const consoleTimeSpy = jest.spyOn(console, 'time').mockImplementation();
-    const publish = jest.fn();
-    test('on error log the error', async () => {
-      await createHotLanguagePacks(modules, publish);
+  describe('create hot reloaded language-packs', () => {
+    test('on error log the error', () => {
+      createHotLanguagePacks(modules, publish);
       chokidar.on.mock.calls[0][1]();
-      expect(consoleWarnSpy.mock.calls).toMatchSnapshot();
-      expect(chokidar.on.mock.calls[0][0]).toBe('error');
+      expect(consoleWarnSpy.mock.calls)
+        .toMatchSnapshot();
+      expect(chokidar.on.mock.calls[0][0])
+        .toBe('error');
     });
-    test('on ready watches language packs', async () => {
-      await createHotLanguagePacks(modules, publish);
+    test('on ready watches language packs', () => {
+      createHotLanguagePacks(modules, publish);
       chokidar.on.mock.calls[1][1]();
-      expect(consoleLogSpy.mock.calls).toMatchSnapshot();
-      expect(chokidar.on.mock.calls[1][0]).toBe('ready');
+      expect(consoleLogSpy.mock.calls)
+        .toMatchSnapshot();
+      expect(chokidar.on.mock.calls[1][0])
+        .toBe('ready');
     });
+  });
+  describe('watchLanguagePackFileEvents', () => {
     test('on add hot reload language pack ', async () => {
-      await createHotLanguagePacks(modules, publish);
-      await chokidar.on.mock.calls[2][1]('sample-module/locale/en-US.json');
-      expect(consoleLogSpy.mock.calls).toMatchSnapshot();
-      expect(chokidar.on.mock.calls[2][0]).toBe('add');
+      watchLanguagePackFileEvents(chokidar, publish);
+      await chokidar.on.mock.calls[0][1]('sample-module/locale/en-US.json');
+      expect(chokidar.on.mock.calls[0][0])
+        .toBe('add');
+      expect(consoleLogSpy.mock.calls)
+        .toMatchSnapshot();
     });
     test('on change hot reload language pack ', async () => {
-      await createHotLanguagePacks(modules, publish);
-      await chokidar.on.mock.calls[3][1]('sample-module/locale/en-US.json');
-      expect(consoleLogSpy.mock.calls).toMatchSnapshot();
-      expect(chokidar.on.mock.calls[3][0]).toBe('change');
+      watchLanguagePackFileEvents(chokidar, publish);
+      await chokidar.on.mock.calls[1][1]('sample-module/locale/en-US.json');
+      expect(chokidar.on.mock.calls[1][0])
+        .toBe('change');
+      expect(consoleLogSpy.mock.calls)
+        .toMatchSnapshot();
     });
-    test('on unlink hot reload language pack', async () => {
-      await createHotLanguagePacks(modules, publish);
-      await chokidar.on.mock.calls[4][1]('sample-module/locale/en-US.json');
-      expect(consoleLogSpy.mock.calls).toMatchSnapshot();
-      expect(chokidar.on.mock.calls[4][0]).toBe('unlink');
+    test('on removed hot reload language pack', async () => {
+      watchLanguagePackFileEvents(chokidar, publish);
+      await chokidar.on.mock.calls[2][1]('sample-module/locale/en-US.json');
+      expect(chokidar.on.mock.calls[2][0])
+        .toBe('unlink');
+      expect(consoleLogSpy.mock.calls)
+        .toMatchSnapshot();
     });
-    test('language packs are loaded', async () => {
-      const app = jest.fn();
-      const languagePacks = ['en-US', 'en-GB'];
-      const useLanguagePacks = true;
-      await loadLanguagePacks(app, {
-        languagePacks,
-        useLanguagePacks,
-        publish,
-      });
-      expect(chokidar.on.mock.calls[2][0]).toBe('add');
-      expect(consoleTimeSpy.mock.calls).toMatchSnapshot();
+  });
+  test('language packs are loaded', async () => {
+    const app = jest.fn();
+    const languagePacks = ['en-US', 'en-GB'];
+    const useLanguagePacks = true;
+    await loadLanguagePacks(app, {
+      languagePacks,
+      useLanguagePacks,
+      publish,
     });
-    test('language packs are not loaded', async () => {
-      const app = jest.fn();
-      const parameters = {
-        languagePacks: [],
-        useLanguagePacks: true,
-        publish,
-      };
+    expect(chokidar.on.mock.calls[1][0])
+      .toBe('ready');
+    expect(consoleTimeSpy.mock.calls)
+      .toMatchSnapshot();
+  });
+  test('language packs are not loaded', async () => {
+    const app = jest.fn();
+    const parameters = {
+      languagePacks: [],
+      useLanguagePacks: true,
+      publish,
+    };
 
-      await loadLanguagePacks(app, parameters);
-      expect(consoleTimeSpy.mock.calls.length).toEqual(0);
-    });
+    await loadLanguagePacks(app, parameters);
+    expect(consoleTimeSpy.mock.calls.length)
+      .toEqual(0);
   });
 });

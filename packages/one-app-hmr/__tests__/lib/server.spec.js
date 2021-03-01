@@ -15,8 +15,14 @@
 import hmrServer from '../../lib/server';
 
 jest.mock('../../lib/logs');
-jest.mock('../../lib/html/middleware');
-jest.mock('../../lib/webpack', () => ({
+jest.mock('../../lib/utils/module-map', () => ({
+  createModuleMap: async () => ({
+    moduleMap: 'module-map.json',
+    localModuleMap: '../sample-module/module-map.json',
+    remoteModuleMap: 'https://one-app-statics.surge.sh/module-map.json',
+  }),
+}));
+jest.mock('../../lib/middleware', () => ({
   loadWebpackMiddleware() {
     return {
       publish: jest.fn(),
@@ -26,6 +32,9 @@ jest.mock('../../lib/webpack', () => ({
       hotMiddleware: jest.fn(),
     };
   },
+  createModulesProxyRelayMiddleware: jest.fn(),
+  loadParrotMiddleware: jest.fn(),
+  createHotModuleRenderingMiddleware: jest.fn(),
 }));
 
 jest.mock('express', () => {
@@ -35,7 +44,9 @@ jest.mock('express', () => {
     })),
     use: jest.fn(() => ({
       use: jest.fn(() => ({
-        use: jest.fn(),
+        use: jest.fn(() => ({
+          use: jest.fn(),
+        })),
       })),
     })),
     listen: jest.fn((listenArgs, callback) => {
@@ -47,6 +58,9 @@ jest.mock('express', () => {
   return mockedExpress;
 });
 
+afterEach(() => {
+  console.info.mockClear();
+});
 describe('hmrServer', () => {
   const config = {
     port: 4000,
@@ -62,7 +76,6 @@ describe('hmrServer', () => {
     useParrotMiddleware: true,
     useLanguagePacks: true,
   };
-
   it('hmr server starts up', async () => {
     const server = await hmrServer(config);
     expect(server[0].listen).toHaveBeenCalled();

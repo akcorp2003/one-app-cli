@@ -53,7 +53,7 @@ export function loadModuleLanguagePacks({ modulePath, localePath = localePathNam
   return null;
 }
 
-export function addLanguagePacksForModule({ moduleName, modulePath, localePath }) {
+export function addLanguagePacksForModule({ modulePath, moduleName, localePath }) {
   const languagePacks = loadModuleLanguagePacks({ modulePath, localePath });
   const locales = languagePacks.reduce((map, [locale, langPack]) => ({
     ...map,

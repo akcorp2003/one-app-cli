@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`createMinifyConfig returns the optimization webpack config for minifying the output 1`] = `
+Object {
+  "devtool": false,
+  "optimization": Object {
+    "minimize": true,
+    "minimizer": Array [
+      TerserPlugin {
+        "options": Object {
+          "cache": true,
+          "cacheKeys": [Function],
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minify": undefined,
+          "parallel": true,
+          "sourceMap": undefined,
+          "terserOptions": Object {
+            "keep_fnames": true,
+          },
+          "test": /\\\\\\.jsx\\?\\$/i,
+        },
+      },
+    ],
+  },
+}
+`;

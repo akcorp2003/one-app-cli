@@ -1,0 +1,84 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cssLoader returns loader config for CSS files 1`] = `
+Object {
+  "exclude": /node_modules/,
+  "test": /\\\\\\.\\(sa\\|sc\\|c\\)ss\\$/,
+  "use": Array [
+    Object {
+      "loader": "style-loader",
+    },
+    Object {
+      "loader": "css-loader",
+      "options": Object {
+        "importLoaders": 2,
+        "modules": Object {
+          "localIdentName": "[name]__[local]___[contenthash:base64:5]",
+        },
+      },
+    },
+    Object {
+      "loader": "sass-loader",
+    },
+    Object {
+      "loader": "postcss-loader",
+      "options": Object {
+        "postcssOptions": Object {
+          "plugins": Object {
+            "cssnano": Object {},
+            "postcss-browser-reporter": Object {},
+            "postcss-preset-env": Object {
+              "browsers": "last 2 versions",
+            },
+          },
+          "syntax": "postcss-scss",
+        },
+        "sourceMap": true,
+      },
+    },
+  ],
+}
+`;
+
+exports[`fileLoader returns loader config for file types 1`] = `
+Object {
+  "test": /\\\\\\.\\(woff\\|woff2\\|ttf\\|eot\\|svg\\|png\\|jpg\\|jpeg\\|gif\\|webm\\)\\(\\\\\\?\\.\\*\\)\\?\\$/,
+  "use": Array [
+    Object {
+      "loader": "file-loader",
+      "options": Object {
+        "name": "../assets/[name].[ext]",
+      },
+    },
+  ],
+}
+`;
+
+exports[`jsxLoader returns loader config for JavaScript files 1`] = `
+Object {
+  "exclude": /node_modules/,
+  "test": /\\\\\\.jsx\\?\\$/,
+  "use": Array [
+    Object {
+      "loader": "/Users/nkiboi/one/oneamex/github/one-app-cli/node_modules/babel-loader/lib/index.js",
+      "options": Object {
+        "babelrc": false,
+        "cacheDirectory": true,
+        "cwd": "/Users/nkiboi/one/oneamex/github/one-app-cli/packages/one-app-hmr/lib",
+        "plugins": Array [],
+        "presets": Array [
+          Array [
+            "amex",
+            Object {
+              "modern": true,
+              "preset-env": Object {
+                "modules": false,
+              },
+            },
+          ],
+        ],
+      },
+    },
+  ],
+}
+`;

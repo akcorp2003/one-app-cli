@@ -1,5 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`locale build create hot reloaded language-packs on error log the error 1`] = `
+Array [
+  Array [
+    "[93m[1m  one-app-hmr ::[22m[39m %s",
+    "[93m[97mlocale[39m[93m - Language pack watcher error: undefined[39m",
+  ],
+]
+`;
+
+exports[`locale build create hot reloaded language-packs on ready watches language packs 1`] = `
+Array [
+  Array [
+    "[96m[1m  one-app-hmr ::[22m[39m %s",
+    "[97mlocale[39m - loaded lang packs for en-US",
+  ],
+  Array [
+    "[96m[1m  one-app-hmr ::[22m[39m %s",
+    "[97mlocale[39m - loaded lang packs for en-US",
+  ],
+  Array [
+    "[96m[1m  one-app-hmr ::[22m[39m %s",
+    "[97mlocale[39m - Watching language packs",
+  ],
+]
+`;
+
 exports[`locale build hot reload language-packs language packs are loaded 1`] = `
 Array [
   Array [
@@ -49,10 +75,20 @@ exports[`locale build hot reload language-packs on ready watches language packs 
 Array [
   Array [
     "[96m[1m  one-app-hmr ::[22m[39m %s",
+    "[97mlocale[39m - loaded lang packs for en-US",
+  ],
+  Array [
+    "[96m[1m  one-app-hmr ::[22m[39m %s",
+    "[97mlocale[39m - loaded lang packs for en-US",
+  ],
+  Array [
+    "[96m[1m  one-app-hmr ::[22m[39m %s",
     "[97mlocale[39m - Watching language packs",
   ],
 ]
 `;
+
+exports[`locale build hot reload language-packs on removed hot reload language pack 1`] = `Array []`;
 
 exports[`locale build hot reload language-packs on unlink hot reload language pack 1`] = `
 Array [
@@ -75,13 +111,29 @@ Array [
 ]
 `;
 
-exports[`locale build language packs are not loaded 1`] = `Array []`;
-
-exports[`locale build update module bundle  1`] = `
+exports[`locale build watchLanguagePackFileEvents on add hot reload language pack  1`] = `
 Array [
   Array [
     "[96m[1m  one-app-hmr ::[22m[39m %s",
-    "[97mlocale[39m - en-US",
+    "[97mlocale[39m - [93m\\"en-us\\"[39m for module [93m\\"sample-module\\"[39m has been added",
+  ],
+]
+`;
+
+exports[`locale build watchLanguagePackFileEvents on change hot reload language pack  1`] = `
+Array [
+  Array [
+    "[96m[1m  one-app-hmr ::[22m[39m %s",
+    "[97mlocale[39m - [93m\\"en-us\\"[39m for module [93m\\"sample-module\\"[39m has been changed",
+  ],
+]
+`;
+
+exports[`locale build watchLanguagePackFileEvents on removed hot reload language pack 1`] = `
+Array [
+  Array [
+    "[96m[1m  one-app-hmr ::[22m[39m %s",
+    "[97mlocale[39m - [93m\\"en-us\\"[39m for module [93m\\"sample-module\\"[39m has been removed",
   ],
 ]
 `;

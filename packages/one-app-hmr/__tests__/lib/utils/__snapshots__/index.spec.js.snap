@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`exports all node API functions 1`] = `
+Array [
+  "isDevelopment",
+  "vol",
+  "vfs",
+  "STATIC_DIR",
+  "MODULES_DIR",
+  "EXTERNAL_DIR",
+  "TEMP_DIR",
+  "getContextPath",
+  "getStaticPath",
+  "getModulesPath",
+  "getOneAppPath",
+  "getVendorsPath",
+  "combineUrlFragments",
+  "getPublicUrl",
+  "getPublicModulesUrl",
+  "getPublicAppUrl",
+  "getPublicExternalsUrl",
+  "extractLanguageDataFromLocale",
+  "loadModuleLanguagePacks",
+  "addLanguagePacksForModule",
+  "addModuleLanguagePack",
+  "removeModuleLanguagePack",
+  "loadRemoteModuleMap",
+  "createLocalModuleMap",
+  "createUnifiedModuleMap",
+  "createModuleMap",
+  "renderDocument",
+  "createInitialState",
+  "getLocalModulesFromStats",
+  "getRootModuleScriptUrl",
+  "getExternalsForScripts",
+  "getStatsFromResponse",
+]
+`;

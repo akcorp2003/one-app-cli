@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`exports all node API functions 1`] = `
+Array [
+  "createConfig",
+  "setupStatics",
+  "setLogLevel",
+  "hmrServer",
+  "createHotModuleRenderingMiddleware",
+  "createModulesProxyRelayMiddleware",
+  "loadWebpackMiddleware",
+]
+`;
