@@ -66,6 +66,7 @@ beforeAll(() => {
 afterEach(() => {
   console.info.mockClear();
 });
+
 describe('hmrServer', () => {
   const config = {
     port: 4000,

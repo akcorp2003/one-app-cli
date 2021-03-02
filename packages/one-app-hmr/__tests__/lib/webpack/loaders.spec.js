@@ -22,11 +22,6 @@ jest.mock('path', () => ({
   resolve: jest.fn(() => '/'),
 }));
 
-beforeAll(() => {
-  jest.spyOn(require, 'resolve');
-  require.resolve.mockImplementation((name) => `node_modules/${name}`);
-});
-
 describe('fileLoader', () => {
   test('returns loader config for file types', () => {
     expect(fileLoader()).toMatchSnapshot();
