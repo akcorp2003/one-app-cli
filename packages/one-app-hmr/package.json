@@ -1,7 +1,7 @@
 {
   "name": "@americanexpress/one-app-hmr",
   "version": "1.0.0",
-  "description": "Hot module reload for Holocron Modules",
+  "description": "Hot module reload dev server (and CLI/API) for Holocron Modules",
   "license": "Apache-2.0",
   "keywords": [
     "one",
@@ -41,7 +41,6 @@
     "babel-preset-amex": "^3.4.0",
     "chalk": "^4.1.0",
     "chokidar": "^3.5.1",
-    "copy-webpack-plugin": "^6.1.0",
     "core-js": "^3.8.3",
     "create-shared-react-context": "^1.0.3",
     "cross-fetch": "^3.0.6",
