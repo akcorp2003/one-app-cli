@@ -29,7 +29,7 @@ export function createDLLConfig({
   useAsReference = false,
   dllName = 'externals',
   manifestPathName = getStaticPath(`.${dllName}.dll.json`),
-  entries = createOneAppExternals(),
+  entries = Object.keys(createOneAppExternals()),
   externals = [],
 } = {}) {
   return {

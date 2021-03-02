@@ -70,8 +70,7 @@ describe('locale build', () => {
     .mockImplementation();
   const publish = jest.fn();
   test('gets module-name and locale from file path', () => {
-    expect(getModuleInfoFromLocalePath('sample-module/locale/en-US.json'))
-      .toEqual(['sample-module', 'sample-module', 'en-us']);
+    expect(getModuleInfoFromLocalePath('sample-module/locale/en-US.json')).toEqual(['sample-module', 'sample-module', 'en-us']);
   });
   describe('create hot reloaded language-packs', () => {
     test('on error log the error', () => {

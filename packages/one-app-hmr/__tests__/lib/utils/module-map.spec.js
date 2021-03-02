@@ -137,7 +137,7 @@ describe('createModuleMap', () => {
         'child-module': {
           baseUrl: '/static/modules/child-module/',
           browser: {
-            url: '/static/modules/child-module/child-module.js',
+            url: '/static/modules/child-module/child-module.browser.js',
           },
         },
       },

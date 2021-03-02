@@ -12,10 +12,43 @@
  * under the License.
  */
 
+import { validate } from 'webpack';
 import { createHotModuleWebpackConfig } from '../../../lib/webpack/module';
 
 describe('createHotModuleWebpackConfig', () => {
-  test('returns the optimization webpack config for minifying the output', () => {
-    expect(createHotModuleWebpackConfig({})).toMatchSnapshot();
+  test('creates the webpack config for hot reloadable modules', () => {
+    const modules = [{
+      moduleName: 'hot-module',
+      modulePath: 'hot-module/src/index.js',
+    }];
+    const config = createHotModuleWebpackConfig({
+      modules,
+    });
+    expect(validate(config)).toBe(undefined);
+  });
+
+  test('uses DLL config when externals are provided', () => {
+    const externals = ['react-package'];
+    const config = createHotModuleWebpackConfig({
+      externals,
+    });
+    expect(validate(config)).toBe(undefined);
+    expect(config.externals).toEqual([
+      '@americanexpress/one-app-ducks',
+      '@americanexpress/one-app-router',
+      'create-shared-react-context',
+      'holocron',
+      'holocron-module-route',
+      'immutable',
+      'prop-types',
+      'react',
+      'react-dom',
+      'react-helmet',
+      'react-redux',
+      'redux',
+      'reselect',
+      // ensure provided/required externals are added to the main set of one app externals
+      'react-package',
+    ]);
   });
 });

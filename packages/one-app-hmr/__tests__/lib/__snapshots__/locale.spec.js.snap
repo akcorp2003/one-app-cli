@@ -3,8 +3,8 @@
 exports[`locale build create hot reloaded language-packs on error log the error 1`] = `
 Array [
   Array [
-    "[93m[1m  one-app-hmr ::[22m[39m %s",
-    "[93m[97mlocale[39m[93m - Language pack watcher error: undefined[39m",
+    "[38;2;255;165;0m[1m  one-app-hmr ::[22m[39m %s",
+    "[38;2;255;165;0m[38;2;152;251;152mlocale[39m[38;2;255;165;0m - Language pack watcher error: undefined[39m",
   ],
 ]
 `;
@@ -12,93 +12,16 @@ Array [
 exports[`locale build create hot reloaded language-packs on ready watches language packs 1`] = `
 Array [
   Array [
-    "[96m[1m  one-app-hmr ::[22m[39m %s",
-    "[97mlocale[39m - loaded lang packs for en-US",
+    "[38;2;0;255;255m[1m  one-app-hmr ::[22m[39m %s",
+    "[38;2;152;251;152mlocale[39m - loaded lang packs for en-US",
   ],
   Array [
-    "[96m[1m  one-app-hmr ::[22m[39m %s",
-    "[97mlocale[39m - loaded lang packs for en-US",
+    "[38;2;0;255;255m[1m  one-app-hmr ::[22m[39m %s",
+    "[38;2;152;251;152mlocale[39m - loaded lang packs for en-US",
   ],
   Array [
-    "[96m[1m  one-app-hmr ::[22m[39m %s",
-    "[97mlocale[39m - Watching language packs",
-  ],
-]
-`;
-
-exports[`locale build hot reload language-packs language packs are loaded 1`] = `
-Array [
-  Array [
-    "[97m[1m  one-app-hmr ::[22m[39m [97mlocale[39m - initializing",
-  ],
-]
-`;
-
-exports[`locale build hot reload language-packs language packs are not loaded 1`] = `Array []`;
-
-exports[`locale build hot reload language-packs on add hot reload language pack  1`] = `
-Array [
-  Array [
-    "[96m[1m  one-app-hmr ::[22m[39m %s",
-    "[97mlocale[39m - \\"en-us\\" for module \\"sample-module\\" has been added",
-  ],
-  Array [
-    "[96m[1m  one-app-hmr ::[22m[39m %s",
-    "[97mlocale[39m - en-US",
-  ],
-]
-`;
-
-exports[`locale build hot reload language-packs on change hot reload language pack  1`] = `
-Array [
-  Array [
-    "[96m[1m  one-app-hmr ::[22m[39m %s",
-    "[97mlocale[39m - \\"en-us\\" for module \\"sample-module\\" has been changed",
-  ],
-  Array [
-    "[96m[1m  one-app-hmr ::[22m[39m %s",
-    "[97mlocale[39m - en-US",
-  ],
-]
-`;
-
-exports[`locale build hot reload language-packs on error log the error 1`] = `
-Array [
-  Array [
-    "[93m[1m  one-app-hmr ::[22m[39m %s",
-    "[93m[97mlocale[39m[93m - Language pack watcher error: undefined[39m",
-  ],
-]
-`;
-
-exports[`locale build hot reload language-packs on ready watches language packs 1`] = `
-Array [
-  Array [
-    "[96m[1m  one-app-hmr ::[22m[39m %s",
-    "[97mlocale[39m - loaded lang packs for en-US",
-  ],
-  Array [
-    "[96m[1m  one-app-hmr ::[22m[39m %s",
-    "[97mlocale[39m - loaded lang packs for en-US",
-  ],
-  Array [
-    "[96m[1m  one-app-hmr ::[22m[39m %s",
-    "[97mlocale[39m - Watching language packs",
-  ],
-]
-`;
-
-exports[`locale build hot reload language-packs on removed hot reload language pack 1`] = `Array []`;
-
-exports[`locale build hot reload language-packs on unlink hot reload language pack 1`] = `
-Array [
-  Array [
-    "[96m[1m  one-app-hmr ::[22m[39m %s",
-    "[97mlocale[39m - \\"en-us\\" for module \\"sample-module\\" has been removed",
-  ],
-  Array [
-    "[96m[1m  one-app-hmr ::[22m[39m %s",
-    "[97mlocale[39m - en-US",
+    "[38;2;0;255;255m[1m  one-app-hmr ::[22m[39m %s",
+    "[38;2;152;251;152mlocale[39m - Watching language packs",
   ],
 ]
 `;
@@ -106,7 +29,7 @@ Array [
 exports[`locale build language packs are loaded 1`] = `
 Array [
   Array [
-    "[97m[1m  one-app-hmr ::[22m[39m [97mlocale[39m - initializing",
+    "[38;2;255;228;196m[1m  one-app-hmr ::[22m[39m [38;2;152;251;152mlocale[39m - initializing",
   ],
 ]
 `;
@@ -114,8 +37,8 @@ Array [
 exports[`locale build watchLanguagePackFileEvents on add hot reload language pack  1`] = `
 Array [
   Array [
-    "[96m[1m  one-app-hmr ::[22m[39m %s",
-    "[97mlocale[39m - [93m\\"en-us\\"[39m for module [93m\\"sample-module\\"[39m has been added",
+    "[38;2;0;255;255m[1m  one-app-hmr ::[22m[39m %s",
+    "[38;2;152;251;152mlocale[39m - [38;2;255;165;0m\\"en-us\\"[39m for module [38;2;255;165;0m\\"sample-module\\"[39m has been added",
   ],
 ]
 `;
@@ -123,8 +46,8 @@ Array [
 exports[`locale build watchLanguagePackFileEvents on change hot reload language pack  1`] = `
 Array [
   Array [
-    "[96m[1m  one-app-hmr ::[22m[39m %s",
-    "[97mlocale[39m - [93m\\"en-us\\"[39m for module [93m\\"sample-module\\"[39m has been changed",
+    "[38;2;0;255;255m[1m  one-app-hmr ::[22m[39m %s",
+    "[38;2;152;251;152mlocale[39m - [38;2;255;165;0m\\"en-us\\"[39m for module [38;2;255;165;0m\\"sample-module\\"[39m has been changed",
   ],
 ]
 `;
@@ -132,8 +55,8 @@ Array [
 exports[`locale build watchLanguagePackFileEvents on removed hot reload language pack 1`] = `
 Array [
   Array [
-    "[96m[1m  one-app-hmr ::[22m[39m %s",
-    "[97mlocale[39m - [93m\\"en-us\\"[39m for module [93m\\"sample-module\\"[39m has been removed",
+    "[38;2;0;255;255m[1m  one-app-hmr ::[22m[39m %s",
+    "[38;2;152;251;152mlocale[39m - [38;2;255;165;0m\\"en-us\\"[39m for module [38;2;255;165;0m\\"sample-module\\"[39m has been removed",
   ],
 ]
 `;

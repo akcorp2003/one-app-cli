@@ -78,7 +78,6 @@ export function getLocalModulesFromStats(stats, {
   rootModuleName,
   moduleMap,
 } = {}) {
-  // TODO: remove in favor of just mounting the root module + runtime entry
   const modules = Object.keys(stats.assetsByChunkName)
     .map((name) => {
       const jsFile = stats.assetsByChunkName[name].find((pathName) => pathName === `${name}/${name}.js`);
@@ -100,18 +99,17 @@ export function getLocalModulesFromStats(stats, {
         src: rootModule.browser.url,
       });
     }
-  } else {
-    // we need the root module to be the first script
-    modules.sort((a) => {
-      if (a.name === 'runtime') {
-        return -10;
-      }
-      if (a.name === rootModuleName) {
-        return -1;
-      }
-      return 0;
-    });
   }
+
+  modules.sort((a) => {
+    if (a.name === 'runtime') {
+      return -10;
+    }
+    if (a.name === rootModuleName) {
+      return -1;
+    }
+    return 0;
+  });
 
   return modules;
 }

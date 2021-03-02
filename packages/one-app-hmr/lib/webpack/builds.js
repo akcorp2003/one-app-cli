@@ -33,8 +33,9 @@ export function buildExternalsDLL(config = {}) {
       if (err) {
         error(err);
         reject(err);
+      } else {
+        resolve(stats);
       }
-      resolve(stats);
     });
   });
 }

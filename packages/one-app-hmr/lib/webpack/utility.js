@@ -34,7 +34,7 @@ export function createMinifyConfig({ isDev = isDevelopment(), keep_fnames = true
   };
 }
 
-export function createExternalEntry([packageName, varName] = []) {
+export function createExternalEntry([packageName, varName]) {
   return {
     [packageName]: {
       commonjs2: packageName,
@@ -61,13 +61,13 @@ export function createOneAppExternals(providedExternals = []) {
     ['react-redux', 'ReactRedux'],
     ['redux', 'Redux'],
     ['reselect', 'Reselect'],
-    ...providedExternals,
+    ...providedExternals.map((external) => (Array.isArray(external) ? external : [external])),
   ]
     .map(createExternalEntry)
     .reduce((map, next) => ({ ...map, ...next }), {});
 }
 
-export function createHotModuleEntry({ moduleName, modulePath } = {}) {
+export function createHotModuleEntry({ moduleName, modulePath }) {
   return {
     [moduleName]: [
       require.resolve('webpack-hot-middleware/client'),

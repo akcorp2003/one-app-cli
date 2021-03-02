@@ -29,33 +29,36 @@ import {
   fileLoader,
 } from './loaders';
 import { createDLLConfig } from './dll';
+import { getContextPath, getModulesPath, getPublicModulesUrl } from '../utils';
+import { libraryVarName } from '../constants';
 
 // eslint-disable-next-line import/prefer-default-export
 export function createHotModuleWebpackConfig({
-  context,
-  publicPath,
-  staticPath,
+  context = getContextPath(),
+  publicPath = getPublicModulesUrl(),
+  staticPath = getModulesPath(),
   modules = [],
   externals = [],
   rootModuleName,
 }) {
   return merge(
     externals.length > 0 ? createDLLConfig({
+      externals: createOneAppExternals(externals),
       useAsReference: true,
     }) : {},
     {
       entry: createHotModuleEntries(modules),
-      externals: createOneAppExternals(externals),
+      externals: Object.keys(createOneAppExternals(externals)),
       target: 'web',
       mode: 'development',
       devtool: 'source-map',
       context,
       output: {
+        publicPath,
         path: staticPath,
         filename: '[name]/[name].js',
         hotUpdateChunkFilename: '[name]/[id].[fullhash].hot-update.js',
-        publicPath,
-        library: 'oneAppHmr',
+        uniqueName: libraryVarName,
       },
       module: {
         rules: [
@@ -83,6 +86,7 @@ export function createHotModuleWebpackConfig({
       },
       plugins: [
         new webpack.EnvironmentPlugin({
+          // TODO: include environment variables being passed in from config
           NODE_ENV: 'development',
         }),
         new webpack.DefinePlugin({
@@ -96,7 +100,7 @@ export function createHotModuleWebpackConfig({
           externals,
         }),
         new ReactRefreshWebpackPlugin({
-          library: 'oneAppHmr',
+          library: libraryVarName,
           overlay: {
             sockIntegration: 'whm',
           },

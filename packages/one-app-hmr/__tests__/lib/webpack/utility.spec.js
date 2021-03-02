@@ -12,10 +12,53 @@
  * under the License.
  */
 
-import { createMinifyConfig } from '../../../lib/webpack/utility';
+import {
+  createMinifyConfig,
+  createOneAppExternals,
+  createHotModuleEntries,
+} from '../../../lib/webpack/utility';
 
 describe('createMinifyConfig', () => {
   test('returns the optimization webpack config for minifying the output', () => {
-    expect(createMinifyConfig()).toMatchSnapshot();
+    const config = createMinifyConfig();
+    expect(config).toMatchSnapshot();
+  });
+
+  test('utilizes a cheap-eval-source-map in development mode', () => {
+    const config = createMinifyConfig({ isDev: true });
+    expect(config.devtool).toEqual('eval-cheap-source-map');
+  });
+});
+
+describe('createOneAppExternals', () => {
+  test('returns the set of externals used by One App', () => {
+    const externals = createOneAppExternals();
+    expect(externals).toMatchSnapshot();
+  });
+
+  test('returns the set of externals used by One App including added externals', () => {
+    const externals = createOneAppExternals([['react-package']]);
+    expect(externals).toMatchSnapshot();
+  });
+});
+
+describe('createHotModuleEntries', () => {
+  test('returns an empty object if no modules were supplied', () => {
+    const entries = createHotModuleEntries();
+    expect(entries).toEqual({});
+  });
+
+  test('returns the entries of modules to be bundled', () => {
+    const moduleName = 'hot-module';
+    const modulePath = '/some/path/to/hot-module';
+    const modules = [{ moduleName, modulePath }];
+    const entries = createHotModuleEntries(modules);
+    expect(entries).toEqual({
+      [moduleName]: [
+        require.resolve('webpack-hot-middleware/client'),
+        require.resolve('react-refresh/runtime'),
+        `${modulePath}/src/index.js`,
+      ],
+    });
   });
 });

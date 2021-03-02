@@ -18,6 +18,15 @@ import {
   jsxLoader,
 } from '../../../lib/webpack/loaders';
 
+jest.mock('path', () => ({
+  resolve: jest.fn(() => '/'),
+}));
+
+beforeAll(() => {
+  jest.spyOn(require, 'resolve');
+  require.resolve.mockImplementation((name) => `node_modules/${name}`);
+});
+
 describe('fileLoader', () => {
   test('returns loader config for file types', () => {
     expect(fileLoader()).toMatchSnapshot();
@@ -32,6 +41,31 @@ describe('cssLoader', () => {
 
 describe('jsxLoader', () => {
   test('returns loader config for JavaScript files', () => {
-    expect(jsxLoader()).toMatchSnapshot();
+    expect(jsxLoader()).toEqual({
+      exclude: /node_modules/,
+      test: /\.jsx?$/,
+      use: [
+        {
+          loader: `${process.cwd()}/node_modules/babel-loader/lib/index.js`,
+          options: {
+            babelrc: false,
+            cacheDirectory: true,
+            cwd: '/',
+            plugins: [],
+            presets: [
+              [
+                'amex',
+                {
+                  modern: true,
+                  'preset-env': {
+                    modules: false,
+                  },
+                },
+              ],
+            ],
+          },
+        },
+      ],
+    });
   });
 });

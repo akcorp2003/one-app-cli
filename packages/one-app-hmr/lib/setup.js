@@ -79,7 +79,7 @@ export function modifySource() {
       'static/',
     ].join('\n');
     if (!fs.readFileSync(gitIgnorePath).toString().includes(gitIgnoreAddition)) {
-      exec(`echo "\n${gitIgnoreAddition}" >> ${gitIgnorePath}`);
+      execSync(`echo "\n${gitIgnoreAddition}" >> ${gitIgnorePath}`);
     }
   }
 }

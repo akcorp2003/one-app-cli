@@ -18,11 +18,11 @@ import webpackHotMiddleware from 'webpack-hot-middleware';
 
 import { createHotModuleWebpackConfig, buildExternalsDLL } from '../webpack';
 import {
-  info, error, warn, time, log, yellow, orange, dodgerblue,
+  info, error, warn, time, log, yellow, orange, magenta,
 } from '../logs';
 import { vfs } from '../utils';
 
-export const printWebpack = (message) => `${dodgerblue('webpack')} - ${message}`;
+export const printWebpack = (message) => `${magenta('webpack')} - ${message}`;
 
 export function printStatsWhenDone(stats) {
   const { errors, warnings } = stats.compilation;
@@ -32,7 +32,7 @@ export function printStatsWhenDone(stats) {
 }
 
 export function printWhenInvalid() {
-  warn(printWebpack('webpack building...'));
+  log(printWebpack(orange('webpack building...')));
 }
 
 export async function loadWebpackMiddleware({
@@ -73,7 +73,6 @@ export async function loadWebpackMiddleware({
     publicPath: webpackConfig.output.publicPath,
   });
   const hotMiddleware = webpackHotMiddleware(compiler, {
-    reload: true,
     log: false,
     dynamicPublicPath: false,
   });

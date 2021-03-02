@@ -14,21 +14,23 @@
 
 import loaderUtils from 'loader-utils';
 
-const modify = (src, { moduleName, rootModuleName, externals }) => {
+import { libraryName } from '../../constants';
+
+export function modify(src, { moduleName, rootModuleName, externals }) {
   if (!src.includes('/* Holocron Hot Module */')) {
     const modifiedSource = src.split('\n').map((line) => {
       if (line.startsWith('export default')) {
         const varName = line.replace('export default', '').replace(';', '').trim();
 
         const newLine = [
-          'import wrapper from \'@americanexpress/one-app-hmr/lib/components/HolocronHmrWrapper.jsx\';',
+          `import wrapper from '@americanexpress/${libraryName}/lib/components/HolocronHmrWrapper.jsx';`,
           `${varName}.moduleName = "${moduleName}";`,
           `const HotHolocronModule = wrapper(${varName});`,
           'export default HotHolocronModule;',
         ];
 
         if (rootModuleName === moduleName && externals.length > 0) {
-          // add providedExternals
+          // adding providedExternals to any root modules being bundled and supplying
           const externalsMap = externals.map((externalName) => `'${externalName}': { module: require('${externalName}') },`).join('\n');
           newLine.push(
             'if (\'appConfig\' in HotHolocronModule === false) HotHolocronModule.appConfig = {};',
@@ -45,7 +47,7 @@ const modify = (src, { moduleName, rootModuleName, externals }) => {
     return modifiedSource.join('\n').trim();
   }
   return src;
-};
+}
 
 export default function HotHolocronModuleLoader(source) {
   const options = loaderUtils.getOptions(this);

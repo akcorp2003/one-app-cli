@@ -66,30 +66,30 @@ describe('getVendorsPath', () => {
 
 describe('combineUrlFragments', () => {
   test('gets path', () => {
-    expect(combineUrlFragments()).toEqual('/');
+    expect(combineUrlFragments('static')).toEqual('static');
   });
 });
 
 describe('getPublicUrl', () => {
   test('gets path', () => {
-    expect(getPublicUrl()).toEqual(combineUrlFragments(STATIC_DIR));
+    expect(getPublicUrl()).toEqual(`/${combineUrlFragments(STATIC_DIR)}`);
   });
 });
 
 describe('getPublicModulesUrl', () => {
   test('gets path', () => {
-    expect(getPublicModulesUrl()).toEqual(combineUrlFragments(STATIC_DIR, MODULES_DIR, []));
+    expect(getPublicModulesUrl()).toEqual(`/${combineUrlFragments(STATIC_DIR, MODULES_DIR, [])}`);
   });
 });
 
 describe('getPublicAppUrl', () => {
   test('gets path', () => {
-    expect(getPublicAppUrl()).toEqual(combineUrlFragments(STATIC_DIR, ONE_APP_DIR, []));
+    expect(getPublicAppUrl()).toEqual(`/${combineUrlFragments(STATIC_DIR, ONE_APP_DIR, [])}`);
   });
 });
 
 describe('getPublicExternalsUrl', () => {
   test('gets path', () => {
-    expect(getPublicExternalsUrl()).toEqual(combineUrlFragments(STATIC_DIR, EXTERNAL_DIR, []));
+    expect(getPublicExternalsUrl()).toEqual(`/${combineUrlFragments(STATIC_DIR, EXTERNAL_DIR, [])}`);
   });
 });

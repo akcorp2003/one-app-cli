@@ -15,9 +15,9 @@
 import path from 'path';
 import { NormalModule } from 'webpack';
 
-// TODO: better regexp to match module entry point, maybe concat module names and create regexp
-// look at compilation "module" from loader hook to identify if entry point
-// (excluding entries from node_modules)
+// TODO: better regexp to match module entry point,
+// or look at compilation "module" from loader hook to identify if entry point
+// (excluding entries from node_modules and exclusive to module entries)
 const moduleRegExp = /\/src\/index\.js$/;
 export default class HotHolocronModulePlugin {
   constructor(options = {}) {
@@ -26,19 +26,24 @@ export default class HotHolocronModulePlugin {
 
   apply(compiler) {
     compiler.hooks.compilation.tap('HotHolocronModulePlugin', (compilation) => {
-      NormalModule.getCompilationHooks(compilation).loader.tap('HotHolocronModulePlugin', (ctx, module) => {
-        const { test = moduleRegExp, rootModuleName, externals } = this.options;
-        if (test.test(module.userRequest)) {
-          module.loaders.unshift({
-            loader: path.join(__dirname, 'hot-holocron-loader.js'),
-            options: {
-              externals,
-              rootModuleName,
-              moduleName: module.userRequest.replace('/src/index.js', '').split('/').reverse()[0],
-            },
-          });
-        }
-      });
+      NormalModule.getCompilationHooks(compilation).loader.tap(
+        'HotHolocronModulePlugin',
+        this.loaderHook.bind(this)
+      );
     });
+  }
+
+  loaderHook(ctx, module) {
+    const { test = moduleRegExp, rootModuleName, externals } = this.options;
+    if (test.test(module.userRequest)) {
+      module.loaders.unshift({
+        loader: path.join(__dirname, 'hot-holocron-loader.js'),
+        options: {
+          externals,
+          rootModuleName,
+          moduleName: module.userRequest.replace('/src/index.js', '').split('/').reverse()[0],
+        },
+      });
+    }
   }
 }

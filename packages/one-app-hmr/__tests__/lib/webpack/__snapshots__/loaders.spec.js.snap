@@ -60,11 +60,11 @@ Object {
   "test": /\\\\\\.jsx\\?\\$/,
   "use": Array [
     Object {
-      "loader": "/Users/nkiboi/one/oneamex/github/one-app-cli/node_modules/babel-loader/lib/index.js",
+      "loader": "/Users/mmtobia/code/one-app-cli/node_modules/babel-loader/lib/index.js",
       "options": Object {
         "babelrc": false,
         "cacheDirectory": true,
-        "cwd": "/Users/nkiboi/one/oneamex/github/one-app-cli/packages/one-app-hmr/lib",
+        "cwd": "/Users/mmtobia/code/one-app-cli/packages/one-app-hmr/lib",
         "plugins": Array [],
         "presets": Array [
           Array [

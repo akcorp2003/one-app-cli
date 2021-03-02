@@ -12,10 +12,55 @@
  * under the License.
  */
 
+import {
+  DllPlugin, DllReferencePlugin, validate,
+} from 'webpack';
+
 import { createDLLConfig } from '../../../lib/webpack/dll';
 
 describe('createDLLConfig', () => {
-  test('returns the optimization webpack config for minifying the output', () => {
-    expect(createDLLConfig()).toMatchSnapshot();
+  test('returns the DLL webpack config of the externals provided', () => {
+    const config = createDLLConfig();
+    expect(validate(config)).toBe(undefined);
+    expect(config.mode).toEqual('production');
+    expect(config.plugins).toEqual([
+      new DllPlugin({
+        context: process.cwd(),
+        path: `${process.cwd()}/static/.externals.dll.json`,
+        name: 'externals',
+      }),
+    ]);
+  });
+
+  test('returns the optimization webpack config for development', () => {
+    const config = createDLLConfig({
+      isDev: true,
+      dllName: 'vendors',
+    });
+    expect(validate(config)).toBe(undefined);
+    expect(config.mode).toEqual('development');
+    expect(config.plugins).toEqual([
+      new DllPlugin({
+        context: process.cwd(),
+        path: `${process.cwd()}/static/.vendors.dll.json`,
+        name: 'vendors',
+      }),
+    ]);
+  });
+
+  test('returns development config for main externals build', () => {
+    const partialConfig = createDLLConfig({
+      dllName: 'vendors',
+      useAsReference: true,
+    });
+    expect(partialConfig).toEqual({
+      plugins: [
+        new DllReferencePlugin({
+          context: process.cwd(),
+          manifest: `${process.cwd()}/static/.vendors.dll.json`,
+          name: 'vendors',
+        }),
+      ],
+    });
   });
 });
