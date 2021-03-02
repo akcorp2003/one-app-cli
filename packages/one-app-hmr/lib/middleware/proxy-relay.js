@@ -15,6 +15,7 @@
 import fetch from 'cross-fetch';
 import ProxyAgent from 'proxy-agent';
 
+import { error } from '../logs';
 import { getContextPath, vol } from '../utils';
 
 // eslint-disable-next-line import/prefer-default-export
@@ -38,7 +39,7 @@ export function createModulesProxyRelayMiddleware({ moduleMap, localModuleMap, r
       const response = await fetch(remoteUrl, {
         headers: { connection: 'keep-alive' },
         agent: new ProxyAgent(),
-      });
+      }).catch(error) || { text: () => '' };
       const text = await response.text();
       vol.fromJSON({
         [localFilePath]: text,

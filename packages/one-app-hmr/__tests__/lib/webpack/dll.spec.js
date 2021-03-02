@@ -20,13 +20,15 @@ import { createDLLConfig } from '../../../lib/webpack/dll';
 
 describe('createDLLConfig', () => {
   test('returns the DLL webpack config of the externals provided', () => {
-    const config = createDLLConfig();
+    const config = createDLLConfig({
+      entries: ['react'],
+    });
     expect(validate(config)).toBe(undefined);
     expect(config.mode).toEqual('production');
     expect(config.plugins).toEqual([
       new DllPlugin({
         context: process.cwd(),
-        path: `${process.cwd()}/static/.externals.dll.json`,
+        path: `${process.cwd()}/static/vendor/.externals.dll.json`,
         name: 'externals',
       }),
     ]);
@@ -36,13 +38,14 @@ describe('createDLLConfig', () => {
     const config = createDLLConfig({
       isDev: true,
       dllName: 'vendors',
+      entries: ['react'],
     });
     expect(validate(config)).toBe(undefined);
     expect(config.mode).toEqual('development');
     expect(config.plugins).toEqual([
       new DllPlugin({
         context: process.cwd(),
-        path: `${process.cwd()}/static/.vendors.dll.json`,
+        path: `${process.cwd()}/static/vendor/.vendors.dll.json`,
         name: 'vendors',
       }),
     ]);
@@ -57,7 +60,7 @@ describe('createDLLConfig', () => {
       plugins: [
         new DllReferencePlugin({
           context: process.cwd(),
-          manifest: `${process.cwd()}/static/.vendors.dll.json`,
+          manifest: `${process.cwd()}/static/vendor/.vendors.dll.json`,
           name: 'vendors',
         }),
       ],

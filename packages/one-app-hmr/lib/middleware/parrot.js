@@ -17,7 +17,7 @@ import chokidar from 'chokidar';
 import parrot from 'parrot-middleware';
 
 import {
-  debug, log, warn, time, deeppink,
+  debug, log, warn, time, deeppink, orange,
 } from '../logs';
 
 export function printParrot() {
@@ -58,19 +58,19 @@ export function createHotParrotMiddleware(scenarios, publish) {
     })
     .on('add', (fileName) => {
       const moduleName = getModuleNameFromFilePath(fileName);
-      log(`${printParrot()} - scenarios for "${moduleName}" has been added`);
+      log(`${printParrot()} - Scenarios for ${orange(`"${moduleName}"`)} has been added`);
       mountScenarios();
       publish({ action: 'parrot:add', path: fileName, moduleName });
     })
     .on('change', (fileName) => {
       const moduleName = getModuleNameFromFilePath(fileName);
-      log(`${printParrot()} - scenarios for "${moduleName}" has been changed`);
+      log(`${printParrot()} - Scenarios for "${moduleName}" has been changed`);
       mountScenarios();
       publish({ action: 'parrot:change', path: fileName, moduleName });
     })
     .on('unlink', (fileName) => {
       const moduleName = getModuleNameFromFilePath(fileName);
-      log(`${printParrot()} - scenarios for "${moduleName}" has been removed`);
+      log(`${printParrot()} - Scenarios for "${moduleName}" has been removed`);
       mountScenarios();
       publish({ action: 'parrot:remove', path: fileName, moduleName });
     });

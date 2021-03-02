@@ -44,7 +44,6 @@ describe('createHotModuleWebpackConfig', () => {
       react: { commonjs2: 'react', root: 'React', var: 'React' },
       'react-dom': { commonjs2: 'react-dom', root: 'ReactDOM', var: 'ReactDOM' },
       'react-helmet': { commonjs2: 'react-helmet', root: 'ReactHelmet', var: 'ReactHelmet' },
-      'react-package': { commonjs2: 'react-package' },
       'react-redux': { commonjs2: 'react-redux', root: 'ReactRedux', var: 'ReactRedux' },
       redux: { commonjs2: 'redux', root: 'Redux', var: 'Redux' },
       reselect: { commonjs2: 'reselect', root: 'Reselect', var: 'Reselect' },

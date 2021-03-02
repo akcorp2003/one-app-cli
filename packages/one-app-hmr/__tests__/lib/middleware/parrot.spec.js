@@ -49,7 +49,7 @@ describe('hot reloads parrot scenarios', () => {
   const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
   const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
   const consoleTimeSpy = jest.spyOn(console, 'time').mockImplementation();
-  const scenariosMock = ['./logs'];
+  const scenariosMock = ['../logs'];
   const publish = () => jest.fn();
   it('loading scenarios ', () => {
     const loadScenariosMock = loadScenarios(scenariosMock);

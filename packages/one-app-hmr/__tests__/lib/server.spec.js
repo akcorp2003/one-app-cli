@@ -15,10 +15,14 @@
 import hmrServer from '../../lib/server';
 
 jest.mock('../../lib/logs');
+jest.mock('../../lib/utils/module-map', () => ({
+  createModuleMap: async () => ({
+    moduleMap: 'module-map.json',
+    localModuleMap: '../sample-module/module-map.json',
+    remoteModuleMap: 'https://one-app-statics.surge.sh/module-map.json',
+  }),
+}));
 jest.mock('../../lib/middleware', () => ({
-  createHotModuleRenderingMiddleware: jest.fn(),
-  createModulesProxyRelayMiddleware: jest.fn(),
-  loadParrotMiddleware: jest.fn(),
   loadWebpackMiddleware() {
     return {
       publish: jest.fn(),
@@ -53,6 +57,10 @@ jest.mock('express', () => {
   });
   Object.defineProperty(mockedExpress, 'static', { value: jest.fn() });
   return mockedExpress;
+});
+
+beforeAll(() => {
+  jest.spyOn(console, 'info');
 });
 
 afterEach(() => {

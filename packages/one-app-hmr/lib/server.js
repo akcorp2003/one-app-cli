@@ -46,7 +46,7 @@ export default async function hmrServer({
 } = {}) {
   info('Starting HMR server');
   info(`Root Holocron module: ${orange(rootModuleName)}`);
-  info(`Holocron modules loaded: ${modules.map(({ moduleName }) => orange(`"${moduleName}"`)).join(', ')}`);
+  info(`Holocron modules loaded: ${modules.map(({ moduleName }) => orange(`"${moduleName}"`)).join(', ')}\n`);
 
   const {
     moduleMap,
@@ -92,10 +92,10 @@ export default async function hmrServer({
 
   return [app, app.listen(port, (error) => {
     if (error) throw error;
-    info(`HMR server is up on "${serverAddress}" - ${yellow('initializing HMR')}`);
+    info(`server is up on "${serverAddress}" - ${yellow('initializing HMR')}\n`);
 
     process.on('exit', () => {
-      warn('HMR server shutting down');
+      warn('server shutting down\n');
     });
   })];
 }

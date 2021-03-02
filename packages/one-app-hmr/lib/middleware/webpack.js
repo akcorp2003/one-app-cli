@@ -18,7 +18,7 @@ import webpackHotMiddleware from 'webpack-hot-middleware';
 
 import { createHotModuleWebpackConfig, buildExternalsDLL } from '../webpack';
 import {
-  info, error, warn, time, log, yellow, orange, magenta,
+  info, error, warn, time, log, yellow, orange, green, magenta,
 } from '../logs';
 import { vfs } from '../utils';
 
@@ -46,10 +46,11 @@ export async function loadWebpackMiddleware({
 } = {}) {
   log(printWebpack('initializing webpack'));
 
-  // TODO: only run if externals present
-  await time(printWebpack(orange('pre-building dll externals for Holocron modules')), async () => {
-    await buildExternalsDLL({ externals });
-  });
+  if (externals.length > 0) {
+    await time(printWebpack(`Building DLL for local externals: [ ${externals.map((external) => green(external)).join(', ')} ] `), async () => {
+      await buildExternalsDLL({ externals });
+    });
+  }
 
   const webpackConfig = createHotModuleWebpackConfig({
     context,

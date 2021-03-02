@@ -87,7 +87,6 @@ const getOneAmexConfig = (oneAmexConfig, moduleName) => {
 const getLocalModules = (modulePath, hmr, modules) => [...new Set(
   (hmr.modules || modules || [])
     .map((pathName) => path.resolve(modulePath, pathName))
-    // .filter((pathName) => pathName !== modulePath)
     .filter((pathName) => fs.existsSync(pathName))
 )];
 const getLanguagePacks = (modulePath, hmr) => []
@@ -147,7 +146,6 @@ export async function createConfig(initialConfig) {
   };
 
   const modules = await Promise.all(config.modules.map(getModuleConfig));
-  modules.unshift(config);
   config.modules = modules;
   config.entryModule = config.moduleName;
   config.scenarios = []

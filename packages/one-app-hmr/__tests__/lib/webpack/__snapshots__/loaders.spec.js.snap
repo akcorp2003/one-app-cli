@@ -53,32 +53,3 @@ Object {
   ],
 }
 `;
-
-exports[`jsxLoader returns loader config for JavaScript files 1`] = `
-Object {
-  "exclude": /node_modules/,
-  "test": /\\\\\\.jsx\\?\\$/,
-  "use": Array [
-    Object {
-      "loader": "/Users/mmtobia/code/one-app-cli/node_modules/babel-loader/lib/index.js",
-      "options": Object {
-        "babelrc": false,
-        "cacheDirectory": true,
-        "cwd": "/Users/mmtobia/code/one-app-cli/packages/one-app-hmr/lib",
-        "plugins": Array [],
-        "presets": Array [
-          Array [
-            "amex",
-            Object {
-              "modern": true,
-              "preset-env": Object {
-                "modules": false,
-              },
-            },
-          ],
-        ],
-      },
-    },
-  ],
-}
-`;

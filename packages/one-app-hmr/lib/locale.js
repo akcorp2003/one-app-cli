@@ -16,7 +16,7 @@ import path from 'path';
 import chokidar from 'chokidar';
 
 import {
-  debug, log, warn, time, palegreen, orange,
+  debug, log, warn, time, palegreen, orange, green,
 } from './logs';
 import {
   addLanguagePacksForModule,
@@ -33,7 +33,7 @@ export function printLocaleAction({ locale, moduleName, action }) {
 }
 
 export function getModuleInfoFromLocalePath(filePath) {
-  const [modulePath, fileBasePath] = filePath.split('/locale/');
+  const [modulePath, fileBasePath = ''] = filePath.split('/locale/');
   const [moduleName] = modulePath.split('/').reverse();
   const [languagePack] = fileBasePath.split('/');
   const locale = languagePack.toLowerCase().replace('.json', '');
@@ -43,7 +43,8 @@ export function getModuleInfoFromLocalePath(filePath) {
 export function loadLanguagePacksForModule(modulePath) {
   const [moduleName] = modulePath.split('/').reverse();
   const langPacksLoaded = addLanguagePacksForModule({ modulePath, moduleName });
-  log(printLocale(`loaded lang packs for ${langPacksLoaded.join(', ')}`));
+  log(printLocale(`Loaded language packs for "${orange(moduleName)}": ${langPacksLoaded.map((langPack) => green(langPack)).join(', ')}`));
+  return [moduleName, langPacksLoaded];
 }
 
 export function watchLanguagePackFileEvents(watcher, publish) {
@@ -79,12 +80,12 @@ export function createHotLanguagePacks(modulePaths, publish) {
   const watcherPaths = modulePaths.map((modulePath) => path.join(modulePath, 'locale'));
   const watcher = chokidar.watch(watcherPaths, watcherOptions);
 
-  modulePaths.forEach(loadLanguagePacksForModule);
+  const moduleNames = modulePaths.map(loadLanguagePacksForModule).map(([moduleName]) => moduleName);
 
   watcher
     .on('error', (error) => warn(printLocale(`Language pack watcher error: ${error}`)))
     .on('ready', () => {
-      log(printLocale('Watching language packs'));
+      log(printLocale(`Watching language packs for ${moduleNames.map((name) => orange(JSON.stringify(name))).join(', ')}`));
       watchLanguagePackFileEvents(watcher, publish);
     });
 

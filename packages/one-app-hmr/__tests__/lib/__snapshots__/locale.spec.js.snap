@@ -13,15 +13,15 @@ exports[`locale build create hot reloaded language-packs on ready watches langua
 Array [
   Array [
     "[38;2;0;255;255m[1m  one-app-hmr ::[22m[39m %s",
-    "[38;2;152;251;152mlocale[39m - loaded lang packs for en-US",
+    "[38;2;152;251;152mlocale[39m - Loaded language packs for \\"[38;2;255;165;0msample-module-1[39m\\": [32men-US[39m",
   ],
   Array [
     "[38;2;0;255;255m[1m  one-app-hmr ::[22m[39m %s",
-    "[38;2;152;251;152mlocale[39m - loaded lang packs for en-US",
+    "[38;2;152;251;152mlocale[39m - Loaded language packs for \\"[38;2;255;165;0msample-module-2[39m\\": [32men-US[39m",
   ],
   Array [
     "[38;2;0;255;255m[1m  one-app-hmr ::[22m[39m %s",
-    "[38;2;152;251;152mlocale[39m - Watching language packs",
+    "[38;2;152;251;152mlocale[39m - Watching language packs for [38;2;255;165;0m\\"sample-module-1\\"[39m, [38;2;255;165;0m\\"sample-module-2\\"[39m",
   ],
 ]
 `;

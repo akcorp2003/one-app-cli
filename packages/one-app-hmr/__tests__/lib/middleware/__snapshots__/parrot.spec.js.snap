@@ -8,11 +8,47 @@ Array [
 ]
 `;
 
+exports[`hot reloads parrot scenarios on add hot reload scenarios  1`] = `
+Array [
+  Array [
+    "[38;2;0;255;255m[1m  one-app-hmr ::[22m[39m %s",
+    "[38;2;255;20;147mparrot[39m - Scenarios for [38;2;255;165;0m\\"sample-module\\"[39m has been added",
+  ],
+]
+`;
+
+exports[`hot reloads parrot scenarios on change hot reload scenarios  1`] = `
+Array [
+  Array [
+    "[38;2;0;255;255m[1m  one-app-hmr ::[22m[39m %s",
+    "[38;2;255;20;147mparrot[39m - Scenarios for \\"sample-module\\" has been changed",
+  ],
+]
+`;
+
 exports[`hot reloads parrot scenarios on error log the error 1`] = `
 Array [
   Array [
     "[38;2;255;165;0m[1m  one-app-hmr ::[22m[39m %s",
     "[38;2;255;165;0m[38;2;255;20;147mparrot[39m[38;2;255;165;0m - Watch error: undefined[39m",
+  ],
+]
+`;
+
+exports[`hot reloads parrot scenarios on ready watches scenarios 1`] = `
+Array [
+  Array [
+    "[38;2;0;255;255m[1m  one-app-hmr ::[22m[39m %s",
+    "[38;2;255;20;147mparrot[39m - Watching scenarios",
+  ],
+]
+`;
+
+exports[`hot reloads parrot scenarios on unlink hot reload scenarios 1`] = `
+Array [
+  Array [
+    "[38;2;0;255;255m[1m  one-app-hmr ::[22m[39m %s",
+    "[38;2;255;20;147mparrot[39m - Scenarios for \\"sample-module\\" has been removed",
   ],
 ]
 `;
