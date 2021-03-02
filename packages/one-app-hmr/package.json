@@ -26,18 +26,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "jest": {
-    "preset": "amex-jest-preset",
-    "setupFiles": [
-      "./test-setup.js"
-    ],
-    "collectCoverageFrom": [
-      "lib/**/*.{js,jsx}",
-      "scripts/**/*.{js}",
-      "!**/node_modules/**",
-      "!test-results/**"
-    ]
-  },
   "files": [
     "bin/",
     "lib/"
