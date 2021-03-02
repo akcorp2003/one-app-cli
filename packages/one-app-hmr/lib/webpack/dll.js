@@ -19,6 +19,7 @@ import {
   isDevelopment,
   getContextPath,
   getStaticPath,
+  getVendorsPath,
 } from '../utils';
 import { createOneAppExternals, createMinifyConfig } from './utility';
 import { jsxLoader } from './loaders';
@@ -28,9 +29,9 @@ export function createDLLConfig({
   isDev = isDevelopment(),
   useAsReference = false,
   dllName = 'externals',
-  manifestPathName = getStaticPath(`.${dllName}.dll.json`),
-  entries = Object.keys(createOneAppExternals()),
-  externals = [],
+  manifestPathName = getVendorsPath(`.${dllName}.dll.json`),
+  entries = [],
+  externals = createOneAppExternals(),
 } = {}) {
   return {
     ...useAsReference

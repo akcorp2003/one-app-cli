@@ -33,22 +33,21 @@ describe('createHotModuleWebpackConfig', () => {
       externals,
     });
     expect(validate(config)).toBe(undefined);
-    expect(config.externals).toEqual([
-      '@americanexpress/one-app-ducks',
-      '@americanexpress/one-app-router',
-      'create-shared-react-context',
-      'holocron',
-      'holocron-module-route',
-      'immutable',
-      'prop-types',
-      'react',
-      'react-dom',
-      'react-helmet',
-      'react-redux',
-      'redux',
-      'reselect',
-      // ensure provided/required externals are added to the main set of one app externals
-      'react-package',
-    ]);
+    expect(config.externals).toEqual({
+      '@americanexpress/one-app-ducks': { commonjs2: '@americanexpress/one-app-ducks', root: 'OneAppDucks', var: 'OneAppDucks' },
+      '@americanexpress/one-app-router': { commonjs2: '@americanexpress/one-app-router', root: 'OneAppRouter', var: 'OneAppRouter' },
+      'create-shared-react-context': { commonjs2: 'create-shared-react-context', root: 'CreateSharedReactContext', var: 'CreateSharedReactContext' },
+      holocron: { commonjs2: 'holocron', root: 'Holocron', var: 'Holocron' },
+      'holocron-module-route': { commonjs2: 'holocron-module-route', root: 'HolocronModuleRoute', var: 'HolocronModuleRoute' },
+      immutable: { commonjs2: 'immutable', root: 'Immutable', var: 'Immutable' },
+      'prop-types': { commonjs2: 'prop-types', root: 'PropTypes', var: 'PropTypes' },
+      react: { commonjs2: 'react', root: 'React', var: 'React' },
+      'react-dom': { commonjs2: 'react-dom', root: 'ReactDOM', var: 'ReactDOM' },
+      'react-helmet': { commonjs2: 'react-helmet', root: 'ReactHelmet', var: 'ReactHelmet' },
+      'react-package': { commonjs2: 'react-package' },
+      'react-redux': { commonjs2: 'react-redux', root: 'ReactRedux', var: 'ReactRedux' },
+      redux: { commonjs2: 'redux', root: 'Redux', var: 'Redux' },
+      reselect: { commonjs2: 'reselect', root: 'Reselect', var: 'Reselect' },
+    });
   });
 });

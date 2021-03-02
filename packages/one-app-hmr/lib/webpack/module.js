@@ -43,12 +43,11 @@ export function createHotModuleWebpackConfig({
 }) {
   return merge(
     externals.length > 0 ? createDLLConfig({
-      externals: createOneAppExternals(externals),
       useAsReference: true,
     }) : {},
     {
       entry: createHotModuleEntries(modules),
-      externals: Object.keys(createOneAppExternals(externals)),
+      externals: createOneAppExternals(),
       target: 'web',
       mode: 'development',
       devtool: 'source-map',
