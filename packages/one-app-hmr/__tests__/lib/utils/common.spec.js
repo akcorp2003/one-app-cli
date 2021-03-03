@@ -12,7 +12,7 @@
  * under the License.
  */
 
-import { isDevelopment } from '../../../lib/utils/common';
+import { isDevelopment } from '../../../lib/utils';
 
 const { NODE_ENV } = process.env;
 
