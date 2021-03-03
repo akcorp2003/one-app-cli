@@ -20,7 +20,12 @@ import { createHotModuleWebpackConfig, buildExternalsDLL } from '../webpack';
 import {
   info, error, warn, time, log, yellow, orange, green, magenta,
 } from '../logs';
-import { vfs } from '../utils';
+import {
+  getModulesPath,
+  getPublicModulesUrl,
+  getContextPath,
+  vfs,
+} from '../utils';
 
 export const printWebpack = (message) => `${magenta('webpack')} - ${message}`;
 
@@ -36,13 +41,13 @@ export function printWhenInvalid() {
 }
 
 export async function loadWebpackMiddleware({
-  context,
-  publicPath,
-  staticPath,
-  modules,
-  externals,
-  rootModuleName,
-  serverAddress,
+  context = getContextPath(),
+  staticPath = getModulesPath(),
+  publicPath = getPublicModulesUrl(),
+  modules = [],
+  externals = [],
+  rootModuleName = '',
+  serverAddress = '',
 } = {}) {
   log(printWebpack('initializing webpack'));
 
@@ -71,7 +76,7 @@ export async function loadWebpackMiddleware({
     serverSideRender: true,
     writeToDisk: !true,
     outputFileSystem: vfs,
-    publicPath: webpackConfig.output.publicPath,
+    publicPath,
   });
   const hotMiddleware = webpackHotMiddleware(compiler, {
     log: false,
