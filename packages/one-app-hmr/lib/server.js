@@ -23,14 +23,14 @@ import {
 } from './middleware';
 import { loadLanguagePacks } from './locale';
 import {
-  info, warn, yellow, orange,
+  info, log, debug, magenta, orange, yellow,
 } from './logs';
 
 export const acceptedMiddleware = (req, res) => {
   res.status(202);
 };
 
-export default async function hmrServer({
+export default async function sandboxServer({
   port = 4000,
   context,
   publicPath,
@@ -44,15 +44,22 @@ export default async function hmrServer({
   useParrotMiddleware,
   useLanguagePacks,
 } = {}) {
-  info('Starting HMR server');
-  info(`Root Holocron module: ${orange(rootModuleName)}`);
-  info(`Holocron modules loaded: ${modules.map(({ moduleName }) => orange(`"${moduleName}"`)).join(', ')}\n`);
+  info(orange.bold('Starting One App Sandbox server'));
+  log(`Root Holocron module: ${orange.bold(JSON.stringify(rootModuleName))}`);
 
   const {
     moduleMap,
     localModuleMap,
     remoteModuleMap,
   } = await createModuleMap({ modules, remoteModuleMapUrl });
+
+  debug(moduleMap);
+
+  const proxyRelayMiddleware = createModulesProxyRelayMiddleware({
+    moduleMap,
+    localModuleMap,
+    remoteModuleMap,
+  });
 
   const serverAddress = `http://localhost:${port}/`;
   const {
@@ -69,33 +76,35 @@ export default async function hmrServer({
     serverAddress,
   });
 
-  const app = express();
-
-  app
-    .use(createModulesProxyRelayMiddleware({ moduleMap, localModuleMap, remoteModuleMap }))
-    .use(devMiddleware)
-    .use(hotMiddleware)
-    .use(getPublicUrl(), express.static(getStaticPath()));
-
-  await loadLanguagePacks(app, { languagePacks, useLanguagePacks, publish });
-  await loadParrotMiddleware(app, { scenarios, useParrotMiddleware, publish });
-
   const renderMiddleware = await createHotModuleRenderingMiddleware({
     rootModuleName,
     moduleMap,
     errorReportingUrl: '/error',
   });
 
+  const app = express();
+
   app
+    .use(proxyRelayMiddleware)
+    .use(devMiddleware)
+    .use(hotMiddleware)
+  // TODO: remove once all files are virtualized (one app statics / externals build)
+    .use(getPublicUrl(), express.static(getStaticPath()));
+
+  await loadLanguagePacks(app, { languagePacks, useLanguagePacks, publish });
+  await loadParrotMiddleware(app, {
+    scenarios, useParrotMiddleware, publish, serverAddress,
+  });
+
+  app
+  // TODO: remove render in favor of static index.html to be served
     .get('*', renderMiddleware)
     .post('/error', acceptedMiddleware);
 
-  return [app, app.listen(port, (error) => {
+  const server = app.listen(port, (error) => {
     if (error) throw error;
-    info(`server is up on "${serverAddress}" - ${yellow('initializing HMR')}\n`);
+    log(`Server is listening to ${yellow(`"${serverAddress}"`)} - ${magenta('Initializing Sandbox')}`);
+  });
 
-    process.on('exit', () => {
-      warn('server shutting down\n');
-    });
-  })];
+  return [app, server];
 }

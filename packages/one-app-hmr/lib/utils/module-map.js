@@ -13,16 +13,30 @@
  */
 
 import fetch from 'cross-fetch';
+import { createTimeoutFetch } from '@americanexpress/fetch-enhancers';
+
 import { combineUrlFragments, getPublicModulesUrl } from './paths';
-import { error } from '../logs';
+import {
+  debug, error, log, orange, red, magenta,
+} from '../logs';
+
+export function printModuleMap(message) {
+  return `${red('module-map')} - ${message}`;
+}
+
+export const fetcher = createTimeoutFetch(6e3)(fetch);
 
 export async function loadRemoteModuleMap(remoteModuleMapUrl) {
   if (typeof remoteModuleMapUrl === 'string') {
-    const response = await fetch(remoteModuleMapUrl);
-    if (response.ok) {
-      return response.json();
+    try {
+      const response = await fetcher(remoteModuleMapUrl);
+      if (response.ok) {
+        return response.json();
+      }
+      error(printModuleMap('fetching the remote module map has failed'));
+    } catch (e) {
+      error(printModuleMap(e));
     }
-    error('fetching the remote module map has failed');
   }
 
   return {
@@ -70,6 +84,25 @@ export async function createModuleMap({ modules, remoteModuleMapUrl }) {
   const remoteModuleMap = await loadRemoteModuleMap(remoteModuleMapUrl);
   const localModuleMap = createLocalModuleMap(modules);
   const moduleMap = createUnifiedModuleMap({ localModuleMap, remoteModuleMap });
+
+  const localModuleNames = modules.map(({ moduleName }) => moduleName);
+  log(
+    printModuleMap(
+      `Local Holocron modules loaded: [ ${modules.map(({ moduleName }) => orange(`"${moduleName}"`)).join(', ')} ]`
+    )
+  );
+  log(
+    printModuleMap(
+      `Remote Holocron modules in module map: [ ${Object.keys(remoteModuleMap.modules)
+        .map((moduleName) => (localModuleNames.includes(moduleName)
+          ? magenta(`"${moduleName}"`)
+          : orange(`"${moduleName}"`))
+        ).join(', ')} ]`
+    )
+  );
+
+  debug(moduleMap);
+
   return {
     remoteModuleMap,
     localModuleMap,

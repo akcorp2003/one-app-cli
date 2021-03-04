@@ -22,20 +22,18 @@ export {
 } from './virtual-file-system';
 
 export {
-  STATIC_DIR,
-  MODULES_DIR,
-  EXTERNAL_DIR,
-  TEMP_DIR,
   getContextPath,
   getStaticPath,
   getModulesPath,
   getOneAppPath,
   getVendorsPath,
+  getTempPath,
   combineUrlFragments,
+  joinUrlFragments,
   getPublicUrl,
   getPublicModulesUrl,
   getPublicAppUrl,
-  getPublicExternalsUrl,
+  getPublicVendorsUrl,
 } from './paths';
 
 export {
@@ -61,3 +59,10 @@ export {
   getExternalsForScripts,
   getStatsFromResponse,
 } from './rendering';
+
+export {
+  loadStatics,
+  loadOneAppStaticsFromDocker,
+  addStaticsDirToGitIgnore,
+  preloadOneAppStatics,
+} from './statics';

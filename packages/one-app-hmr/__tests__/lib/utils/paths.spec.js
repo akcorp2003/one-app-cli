@@ -18,78 +18,92 @@ import {
   STATIC_DIR,
   MODULES_DIR,
   EXTERNAL_DIR,
-  // TEMP_DIR,
+  ONE_APP_DIR,
+  TEMP_DIR,
   getContextPath,
   getStaticPath,
   getModulesPath,
   getOneAppPath,
   getVendorsPath,
+  getTempPath,
   combineUrlFragments,
+  joinUrlFragments,
   getPublicUrl,
   getPublicModulesUrl,
   getPublicAppUrl,
-  getPublicExternalsUrl,
-  ONE_APP_DIR,
+  getPublicVendorsUrl,
 } from '../../../lib/utils/paths';
 
 const cwd = process.cwd();
 
 describe('getContextPath', () => {
-  test('gets path', () => {
+  test('gets context path', () => {
     expect(getContextPath()).toEqual(cwd);
   });
 });
 
 describe('getStaticPath', () => {
-  test('gets path', () => {
+  test('gets static path', () => {
     expect(getStaticPath()).toEqual(path.join(cwd, STATIC_DIR));
   });
 });
 
 describe('getModulesPath', () => {
-  test('gets path', () => {
+  test('gets modules path', () => {
     expect(getModulesPath()).toEqual(path.join(getStaticPath(), MODULES_DIR));
   });
 });
 
 describe('getOneAppPath', () => {
-  test('gets path', () => {
+  test('gets One App path', () => {
     expect(getOneAppPath()).toEqual(path.join(getStaticPath(), ONE_APP_DIR));
   });
 });
 
 describe('getVendorsPath', () => {
-  test('gets path', () => {
+  test('gets vendors path', () => {
     expect(getVendorsPath()).toEqual(path.join(getStaticPath(), EXTERNAL_DIR));
   });
 });
 
+describe('getTempPath', () => {
+  test('gets temp path', () => {
+    expect(getTempPath()).toEqual(path.join(getStaticPath(), TEMP_DIR));
+  });
+});
+
 describe('combineUrlFragments', () => {
-  test('gets path', () => {
+  test('gets public url for bundle', () => {
     expect(combineUrlFragments('static')).toEqual('static');
   });
 });
 
+describe('joinUrlFragments', () => {
+  test('gets public url for bundle', () => {
+    expect(joinUrlFragments('/static', '/app')).toEqual('static/app');
+  });
+});
+
 describe('getPublicUrl', () => {
-  test('gets path', () => {
+  test('gets public url for bundle', () => {
     expect(getPublicUrl()).toEqual(`/${combineUrlFragments(STATIC_DIR)}`);
   });
 });
 
 describe('getPublicModulesUrl', () => {
-  test('gets path', () => {
+  test('gets public url for modules bundle', () => {
     expect(getPublicModulesUrl()).toEqual(`/${combineUrlFragments(STATIC_DIR, MODULES_DIR, [])}`);
   });
 });
 
 describe('getPublicAppUrl', () => {
-  test('gets path', () => {
+  test('gets public url for One App bundle', () => {
     expect(getPublicAppUrl()).toEqual(`/${combineUrlFragments(STATIC_DIR, ONE_APP_DIR, [])}`);
   });
 });
 
-describe('getPublicExternalsUrl', () => {
-  test('gets path', () => {
-    expect(getPublicExternalsUrl()).toEqual(`/${combineUrlFragments(STATIC_DIR, EXTERNAL_DIR, [])}`);
+describe('getPublicVendorsUrl', () => {
+  test('gets public url for vendors bundle', () => {
+    expect(getPublicVendorsUrl()).toEqual(`/${combineUrlFragments(STATIC_DIR, EXTERNAL_DIR, [])}`);
   });
 });

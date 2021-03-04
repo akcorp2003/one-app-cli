@@ -12,7 +12,8 @@
  * under the License.
  */
 
-import hmrServer from '../../lib/server';
+import { orange } from '../../lib/logs';
+import sandboxServer from '../../lib/server';
 
 jest.mock('../../lib/logs');
 jest.mock('../../lib/utils/module-map', () => ({
@@ -60,6 +61,7 @@ jest.mock('express', () => {
 });
 
 beforeAll(() => {
+  orange.bold = jest.fn();
   jest.spyOn(console, 'info');
 });
 
@@ -67,7 +69,7 @@ afterEach(() => {
   console.info.mockClear();
 });
 
-describe('hmrServer', () => {
+describe('sandboxServer', () => {
   const config = {
     port: 4000,
     context: jest.fn(),
@@ -83,7 +85,7 @@ describe('hmrServer', () => {
     useLanguagePacks: true,
   };
   it('hmr server starts up', async () => {
-    const server = await hmrServer(config);
+    const server = await sandboxServer(config);
     expect(server[0].listen).toHaveBeenCalled();
   });
 });

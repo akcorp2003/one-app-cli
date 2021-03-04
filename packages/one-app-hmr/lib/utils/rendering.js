@@ -20,7 +20,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/server';
 import importJsx from 'import-jsx';
 
-import { getVendorsPath, getPublicModulesUrl, getPublicExternalsUrl } from './paths';
+import { getVendorsPath, getPublicModulesUrl, getPublicVendorsUrl } from './paths';
 import { error } from '../logs';
 
 export function renderDocument(props) {
@@ -64,7 +64,7 @@ export function getExternalsForScripts() {
   )
     .filter((pathname) => pathname.endsWith('.js'))
     .map((filename) => ({
-      src: getPublicExternalsUrl(filename),
+      src: getPublicVendorsUrl(filename),
     }));
 }
 

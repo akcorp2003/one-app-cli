@@ -47,10 +47,10 @@ npm run hmr
 The Node API gives developers the blocks that make up the hot Holocron module server.
 
 ```js
-import { hmrServer } from '@americanexpress/one-app-hmr';
+import { sandboxServer } from '@americanexpress/one-app-hmr';
 
 (async function start() {
-  const [app, server] = await hmrServer({
+  const [app, server] = await sandboxServer({
     port: 3090,
     modules: [
       '.',
@@ -109,8 +109,8 @@ Example config:
 The main exports to set up your own dev server.
 
 * `createConfig`
-* `setupStatics`
-* `hmrServer`
+* `loadStatics`
+* `sandboxServer`
 * `loadWebpackMiddleware`
 * `createHotModuleRenderingMiddleware`
 * `renderDocument`
@@ -119,8 +119,8 @@ The main exports to set up your own dev server.
 ```js
 (async function startDevServer() {
   const config = await createConfig();
-  await setupStatics(config);
-  const [app, server] = await hmrServer(config);
+  await loadStatics(config);
+  const [app, server] = await sandboxServer(config);
 }());
 ```
 

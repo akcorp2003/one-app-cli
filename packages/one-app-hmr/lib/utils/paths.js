@@ -42,14 +42,22 @@ export function getVendorsPath(filePath = '', context) {
   return path.join(context || getContextPath(), STATIC_DIR, EXTERNAL_DIR, filePath);
 }
 
+export function getTempPath(filePath = '', context) {
+  return path.join(context || getContextPath(), STATIC_DIR, TEMP_DIR, filePath);
+}
+
 // URLs relatively formatted to the development server
 
 export function combineUrlFragments(...args) {
   return [].concat(args).join('/');
 }
 
-export function getPublicUrl() {
-  return `/${combineUrlFragments(STATIC_DIR)}`;
+export function joinUrlFragments(...args) {
+  return [].concat(args).map((pathName) => pathName.replace(/^\//, '').replace(/\/$/, '')).join('/');
+}
+
+export function getPublicUrl(filePath = '') {
+  return `/${combineUrlFragments(...[STATIC_DIR].concat(filePath || []))}`;
 }
 
 export function getPublicModulesUrl(moduleName) {
@@ -60,6 +68,6 @@ export function getPublicAppUrl(appPath) {
   return `/${combineUrlFragments(STATIC_DIR, ONE_APP_DIR, appPath || [])}`;
 }
 
-export function getPublicExternalsUrl(resource) {
+export function getPublicVendorsUrl(resource) {
   return `/${combineUrlFragments(STATIC_DIR, EXTERNAL_DIR, resource || [])}`;
 }

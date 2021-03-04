@@ -16,7 +16,7 @@ import path from 'path';
 import chokidar from 'chokidar';
 
 import {
-  debug, log, warn, time, palegreen, orange, green,
+  debug, log, warn, time, palegreen, orange, green, info,
 } from './logs';
 import {
   addLanguagePacksForModule,
@@ -37,40 +37,46 @@ export function getModuleInfoFromLocalePath(filePath) {
   const [moduleName] = modulePath.split('/').reverse();
   const [languagePack] = fileBasePath.split('/');
   const locale = languagePack.toLowerCase().replace('.json', '');
-  return [moduleName, modulePath, locale];
+  return [moduleName, modulePath, languagePack, locale];
 }
 
 export function loadLanguagePacksForModule(modulePath) {
   const [moduleName] = modulePath.split('/').reverse();
   const langPacksLoaded = addLanguagePacksForModule({ modulePath, moduleName });
-  log(printLocale(`Loaded language packs for "${orange(moduleName)}": ${langPacksLoaded.map((langPack) => green(langPack)).join(', ')}`));
+  info(printLocale(`Loaded language packs for ${orange(`"${moduleName}"`)}: [ ${langPacksLoaded.map((langPack) => green(langPack)).join(', ')} ]`));
   return [moduleName, langPacksLoaded];
 }
 
 export function watchLanguagePackFileEvents(watcher, publish) {
   watcher
-    .on('add', (fileName) => {
-      const [moduleName, modulePath, locale] = getModuleInfoFromLocalePath(fileName);
+    .on('add', (filePath) => {
+      const [moduleName, modulePath, locale] = getModuleInfoFromLocalePath(filePath);
       printLocaleAction({ locale, moduleName, action: 'added' });
-      addModuleLanguagePack({ moduleName, modulePath, locale });
+      addModuleLanguagePack({
+        filePath, moduleName, modulePath, locale,
+      });
       publish({
-        action: 'locale:add', path: fileName, moduleName, locale,
+        action: 'locale:add', path: filePath, moduleName, locale,
       });
     })
-    .on('change', (fileName) => {
-      const [moduleName, modulePath, locale] = getModuleInfoFromLocalePath(fileName);
+    .on('change', (filePath) => {
+      const [moduleName, modulePath, locale] = getModuleInfoFromLocalePath(filePath);
       printLocaleAction({ locale, moduleName, action: 'changed' });
-      addModuleLanguagePack({ moduleName, modulePath, locale });
+      addModuleLanguagePack({
+        filePath, moduleName, modulePath, locale,
+      });
       publish({
-        action: 'locale:change', path: fileName, moduleName, locale,
+        action: 'locale:change', path: filePath, moduleName, locale,
       });
     })
-    .on('unlink', (fileName) => {
-      const [moduleName, modulePath, locale] = getModuleInfoFromLocalePath(fileName);
+    .on('unlink', (filePath) => {
+      const [moduleName, modulePath, locale] = getModuleInfoFromLocalePath(filePath);
       printLocaleAction({ locale, moduleName, action: 'removed' });
-      removeModuleLanguagePack({ moduleName, modulePath, locale });
+      removeModuleLanguagePack({
+        filePath, moduleName, modulePath, locale,
+      });
       publish({
-        action: 'locale:remove', path: fileName, moduleName, locale,
+        action: 'locale:remove', path: filePath, moduleName, locale,
       });
     });
 }
@@ -85,7 +91,7 @@ export function createHotLanguagePacks(modulePaths, publish) {
   watcher
     .on('error', (error) => warn(printLocale(`Language pack watcher error: ${error}`)))
     .on('ready', () => {
-      log(printLocale(`Watching language packs for ${moduleNames.map((name) => orange(JSON.stringify(name))).join(', ')}`));
+      log(printLocale(`Watching language packs for modules: [ ${moduleNames.map((name) => orange(JSON.stringify(name))).join(', ')} ]`));
       watchLanguagePackFileEvents(watcher, publish);
     });
 
@@ -97,7 +103,7 @@ export async function loadLanguagePacks(app, { languagePacks, useLanguagePacks, 
 
   if (useLanguagePacks && languagePacks.length > 0) {
     debug(printLocale('Loading language packs %o'), languagePacks);
-    await time(printLocale('initializing'), () => {
+    await time(printLocale('Language pack setup time'), () => {
       createHotLanguagePacks(languagePacks, publish);
     });
   } else {

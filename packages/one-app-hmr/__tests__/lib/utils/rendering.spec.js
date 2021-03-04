@@ -23,7 +23,7 @@ import {
   getExternalsForScripts,
   getStatsFromResponse,
 } from '../../../lib/utils/rendering';
-import { getPublicExternalsUrl } from '../../../lib/utils/paths';
+import { getPublicVendorsUrl } from '../../../lib/utils/paths';
 
 jest.mock('fs', () => ({
   existsSync: jest.fn(),
@@ -83,7 +83,7 @@ describe('getExternalsForScripts', () => {
     fs.readdirSync.mockImplementationOnce(() => [vendorsSrc]);
     const externals = getExternalsForScripts();
     expect(externals).toEqual([{
-      src: getPublicExternalsUrl(vendorsSrc),
+      src: getPublicVendorsUrl(vendorsSrc),
     }]);
   });
 });

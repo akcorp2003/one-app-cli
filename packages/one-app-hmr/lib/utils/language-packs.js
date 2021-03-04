@@ -53,7 +53,7 @@ export function loadModuleLanguagePacks({ modulePath, localePath = localePathNam
   return null;
 }
 
-export function addLanguagePacksForModule({ modulePath, moduleName, localePath }) {
+export function addLanguagePacksForModule({ modulePath, moduleName, localePath = localePathName }) {
   const languagePacks = loadModuleLanguagePacks({ modulePath, localePath });
   const locales = languagePacks.reduce((map, [locale, langPack]) => ({
     ...map,
@@ -64,19 +64,20 @@ export function addLanguagePacksForModule({ modulePath, moduleName, localePath }
 }
 
 export function addModuleLanguagePack({
-  moduleName, modulePath, locale, localePath = localePathName,
+  filePath, moduleName, locale,
 }) {
-  const langPackPath = path.join(modulePath, localePath, locale);
-  const langPack = extractLanguageDataFromLocale(langPackPath);
-  vol.fromJSON({
-    [[locale, `${moduleName}.json`].join('/')]: JSON.stringify(langPack),
-  }, getModulesPath(moduleName));
+  const localeSymbol = locale.replace(/(\..*)$/, '').toLowerCase();
+  const langPack = extractLanguageDataFromLocale(filePath);
+  const bundlePath = getModulesPath([
+    [moduleName, localeSymbol, `${moduleName}.json`].join('/'),
+  ]);
+  vol.writeFileSync(bundlePath, JSON.stringify(langPack));
 }
 
 export function removeModuleLanguagePack({
   moduleName, locale,
 }) {
-  const localeFilePath = getModulesPath([moduleName, locale, `${moduleName}.json`].join('/'));
+  const localeFilePath = getModulesPath([moduleName, locale.replace(/(\..*)$/, '').toLowerCase(), `${moduleName}.json`].join('/'));
   vol.unlinkSync(localeFilePath);
   vol.rmdirSync(localeFilePath.replace(`/${moduleName}.json`, ''));
 }
