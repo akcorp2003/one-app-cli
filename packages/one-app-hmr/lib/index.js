@@ -12,6 +12,13 @@
  * under the License.
  */
 
-// eslint-disable-next-line no-global-assign
-require = require('esm')(module, { mainFields: ['module', 'main'] });
-module.exports = require('./main.js');
+export { createConfig } from './config';
+export { loadStatics } from './utils';
+export { setLogLevel } from './logs';
+export { default as sandboxServer } from './server';
+export {
+  createHotModuleRenderingMiddleware,
+  createModulesProxyRelayMiddleware,
+  loadWebpackMiddleware,
+  loadParrotMiddleware,
+} from './middleware';

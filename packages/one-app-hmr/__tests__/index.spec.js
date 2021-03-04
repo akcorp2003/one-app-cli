@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express Travel Related Services Company, Inc.
+ * Copyright 2021 American Express Travel Related Services Company, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -12,12 +12,18 @@
  * under the License.
  */
 
-export { createConfig } from './config';
-export { setupStatics } from './setup';
-export { setLogLevel } from './logs';
-export { default as hmrServer } from './server';
-export {
-  createHotModuleRenderingMiddleware,
-  createModulesProxyRelayMiddleware,
-  loadWebpackMiddleware,
-} from './middleware';
+import esm from 'esm';
+import lib from '..';
+
+jest.mock('esm', () => {
+  const fakeRequire = jest.fn(() => ({ library: true }));
+  const esmLib = jest.fn(() => fakeRequire);
+  esmLib.require = fakeRequire;
+  return esmLib;
+});
+
+test('exports all node API functions', () => {
+  expect(Object.keys(lib)).toEqual(['library']);
+  expect(esm).toHaveBeenCalled();
+  expect(esm.require).toHaveBeenCalled();
+});

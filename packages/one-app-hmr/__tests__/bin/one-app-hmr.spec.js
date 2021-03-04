@@ -14,14 +14,14 @@
 
 import {
   createConfig,
-  setupStatics,
-  hmrServer,
-} from '../../lib';
+  loadStatics,
+  sandboxServer,
+} from '../..';
 
-jest.mock('../../lib/index', () => ({
+jest.mock('../..', () => ({
   createConfig: jest.fn(() => Promise.resolve('config')),
-  setupStatics: jest.fn(() => Promise.resolve()),
-  hmrServer: jest.fn(() => Promise.resolve()),
+  loadStatics: jest.fn(() => Promise.resolve()),
+  sandboxServer: jest.fn(() => Promise.resolve()),
 }));
 
 function loadBin() {
@@ -37,9 +37,9 @@ describe('one-app-hmr ', () => {
   test('runs the bin script without error', async () => {
     await expect(loadBin()).resolves.toBeUndefined();
     expect(createConfig).toHaveBeenCalledTimes(1);
-    expect(setupStatics).toHaveBeenCalledTimes(1);
-    expect(setupStatics).toHaveBeenCalledWith('config');
-    expect(hmrServer).toHaveBeenCalledTimes(1);
-    expect(hmrServer).toHaveBeenCalledWith('config');
+    expect(loadStatics).toHaveBeenCalledTimes(1);
+    expect(loadStatics).toHaveBeenCalledWith('config');
+    expect(sandboxServer).toHaveBeenCalledTimes(1);
+    expect(sandboxServer).toHaveBeenCalledWith('config');
   });
 });

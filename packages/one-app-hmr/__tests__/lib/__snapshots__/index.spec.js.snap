@@ -3,11 +3,12 @@
 exports[`exports all node API functions 1`] = `
 Array [
   "createConfig",
-  "setupStatics",
+  "loadStatics",
   "setLogLevel",
-  "hmrServer",
+  "sandboxServer",
   "createHotModuleRenderingMiddleware",
   "createModulesProxyRelayMiddleware",
   "loadWebpackMiddleware",
+  "loadParrotMiddleware",
 ]
 `;

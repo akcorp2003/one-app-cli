@@ -12,18 +12,8 @@
  * under the License.
  */
 
-import esm from 'esm';
-import lib from '../../lib';
-
-jest.mock('esm', () => {
-  const fakeRequire = jest.fn(() => ({ library: true }));
-  const esmLib = jest.fn(() => fakeRequire);
-  esmLib.require = fakeRequire;
-  return esmLib;
-});
+import * as nodeAPI from '../../lib';
 
 test('exports all node API functions', () => {
-  expect(Object.keys(lib)).toEqual(['library']);
-  expect(esm).toHaveBeenCalled();
-  expect(esm.require).toHaveBeenCalled();
+  expect(Object.keys(nodeAPI)).toMatchSnapshot();
 });

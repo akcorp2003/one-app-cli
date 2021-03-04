@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express Travel Related Services Company, Inc.
+ * Copyright 2020 American Express Travel Related Services Company, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -12,8 +12,6 @@
  * under the License.
  */
 
-import * as nodeAPI from '../../lib/main';
-
-test('exports all node API functions', () => {
-  expect(Object.keys(nodeAPI)).toMatchSnapshot();
-});
+// eslint-disable-next-line no-global-assign
+require = require('esm')(module, { mainFields: ['module', 'main'] });
+module.exports = require('./lib');

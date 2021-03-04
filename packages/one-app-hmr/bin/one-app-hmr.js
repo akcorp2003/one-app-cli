@@ -15,15 +15,12 @@
 
 const {
   createConfig,
-  setupStatics,
-  hmrServer,
-} = require('../lib');
+  loadStatics,
+  sandboxServer,
+} = require('..');
 
 module.exports = (async function oneAppHMR() {
-  // TODO: add support for cli options, merge with default config, pass to createConfig
   const config = await createConfig();
-  // setup before starting
-  await setupStatics(config);
-
-  await hmrServer(config);
+  await loadStatics(config);
+  await sandboxServer(config);
 }());
