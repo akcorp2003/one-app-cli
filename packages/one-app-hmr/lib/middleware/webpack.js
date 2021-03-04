@@ -21,9 +21,12 @@ import {
   info, error, warn, time, log, yellow, orange, green, magenta,
 } from '../logs';
 import {
+  getContextPath,
   getModulesPath,
   getPublicModulesUrl,
-  getContextPath,
+  getPublicUrl,
+  getPublicVendorsUrl,
+  joinUrlFragments,
   vfs,
 } from '../utils';
 
@@ -52,9 +55,16 @@ export async function loadWebpackMiddleware({
   log(printWebpack('initializing webpack'));
 
   if (externals.length > 0) {
-    await time(printWebpack(`Building DLL for local externals: [ ${externals.map((external) => green(external)).join(', ')} ] `), async () => {
+    await time(printWebpack(`Building DLL bundle for local externals: [ ${externals.map((external) => green(external)).join(', ')} ] `), async () => {
       await buildExternalsDLL({ externals });
     });
+
+    const externalsReportUrl = joinUrlFragments(serverAddress, getPublicVendorsUrl('externals-report.html'));
+    log(
+      printWebpack(
+        `Bundle Analyzer for DLL externals can be found at ${yellow.bold(`"${externalsReportUrl}"`)}`
+      )
+    );
   }
 
   const webpackConfig = createHotModuleWebpackConfig({
@@ -66,6 +76,7 @@ export async function loadWebpackMiddleware({
     rootModuleName,
   });
   const compiler = webpack(webpackConfig);
+  // compiler.outputFileSystem = vfs;
   compiler.hooks.done.tap('OneAppHMR', printStatsWhenDone);
   compiler.hooks.invalid.tap('OneAppHMR', printWhenInvalid);
   // removing all logs
@@ -74,9 +85,9 @@ export async function loadWebpackMiddleware({
     stats: false,
     index: false,
     serverSideRender: true,
-    writeToDisk: !true,
+    writeToDisk: true,
     outputFileSystem: vfs,
-    publicPath,
+    publicPath: webpackConfig.output.publicPath,
   });
   const hotMiddleware = webpackHotMiddleware(compiler, {
     log: false,
@@ -84,7 +95,9 @@ export async function loadWebpackMiddleware({
   });
 
   devMiddleware.waitUntilValid(() => {
-    info(`${orange('🔥 HMR server is ready')} - visit "${yellow(serverAddress)}" to start!\n`);
+    info(printWebpack(`${orange('🔥 Holocron module reload is ready')} - visit ${yellow.bold(`"${serverAddress}"`)} to start!\n`));
+    const analyzerHtml = joinUrlFragments(serverAddress, getPublicUrl('sandbox-report.html'));
+    log(printWebpack(orange('Bundle Analyzer for loaded Holocron modules is available at %s')), yellow.bold(`"${analyzerHtml}"`));
   });
 
   return {

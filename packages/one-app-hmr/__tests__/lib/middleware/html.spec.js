@@ -13,6 +13,14 @@
  */
 
 import { createHotModuleRenderingMiddleware } from '../../../lib/middleware/html';
+import { renderDocument, getLocalModulesFromStats } from '../../../lib/utils';
+
+jest.mock('../../../lib/utils');
+
+beforeAll(() => {
+  renderDocument.mockImplementation(() => '<html />');
+  getLocalModulesFromStats.mockImplementation(() => [{ name: 'module', src: 'module/module.js' }]);
+});
 
 describe('createHotModuleRenderingMiddleware', () => {
   test('returns configured middleware handler function', () => {
@@ -25,7 +33,7 @@ describe('createHotModuleRenderingMiddleware', () => {
     expect(middleware).toBeInstanceOf(Function);
   });
 
-  test('responds to request for static html', () => {
+  test('responds to request for static html and caches html renders', () => {
     const config = {
       moduleMap: {
         modules: {
@@ -58,5 +66,9 @@ describe('createHotModuleRenderingMiddleware', () => {
       },
     };
     expect(middleware({}, res)).toEqual(undefined);
+    expect(renderDocument).toHaveBeenCalledTimes(1);
+    // caching the html prevents the document from being re-rendered
+    expect(middleware({}, res)).toEqual(undefined);
+    expect(renderDocument).toHaveBeenCalledTimes(1);
   });
 });

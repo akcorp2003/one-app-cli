@@ -13,10 +13,19 @@
  */
 
 import fetch from 'cross-fetch';
+import { createTimeoutFetch } from '@americanexpress/fetch-enhancers';
 import ProxyAgent from 'proxy-agent';
 
 import { error } from '../logs';
 import { getContextPath, vol } from '../utils';
+
+export function fetchRemoteRequest(remoteUrl) {
+  const fetcher = createTimeoutFetch(6e3)(fetch);
+  return fetcher(remoteUrl, {
+    headers: { connection: 'keep-alive' },
+    agent: new ProxyAgent(),
+  }).catch((e) => error(e));
+}
 
 // eslint-disable-next-line import/prefer-default-export
 export function createModulesProxyRelayMiddleware({ moduleMap, localModuleMap, remoteModuleMap }) {
@@ -36,10 +45,7 @@ export function createModulesProxyRelayMiddleware({ moduleMap, localModuleMap, r
     if (remoteModuleMatch && !vol.existsSync(localFilePath)) {
       const [localBasePath, remoteBasePath] = remoteModuleMatch;
       const remoteUrl = req.path.replace(localBasePath, remoteBasePath);
-      const response = await fetch(remoteUrl, {
-        headers: { connection: 'keep-alive' },
-        agent: new ProxyAgent(),
-      }).catch(error) || { text: () => '' };
+      const response = await fetchRemoteRequest(remoteUrl) || { text: () => '' };
       const text = await response.text();
       vol.fromJSON({
         [localFilePath]: text,

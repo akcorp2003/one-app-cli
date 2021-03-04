@@ -23,7 +23,7 @@ import {
   loadWebpackMiddleware,
 } from '../../../lib/middleware/webpack';
 import {
-  error, info, log, warn, time,
+  error, info, log, warn, time, yellow,
 } from '../../../lib/logs';
 
 jest.mock('webpack');
@@ -38,6 +38,7 @@ const publish = jest.fn();
 const waitUntilValid = jest.fn();
 
 beforeAll(() => {
+  yellow.bold = jest.fn();
   webpackHotMiddleware.mockImplementation(() => ({ publish }));
   webpackDevMiddleware.mockImplementation(() => ({ waitUntilValid }));
   webpack.mockImplementation(() => ({

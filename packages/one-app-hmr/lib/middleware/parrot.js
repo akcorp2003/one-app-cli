@@ -17,11 +17,12 @@ import chokidar from 'chokidar';
 import parrot from 'parrot-middleware';
 
 import {
-  debug, log, warn, time, deeppink, orange,
+  debug, log, warn, time, deeppink, orange, yellow, info,
 } from '../logs';
+import { joinUrlFragments } from '../utils';
 
-export function printParrot() {
-  return deeppink('parrot');
+export function printParrot(message = '') {
+  return `${deeppink('parrot')} - ${message}`;
 }
 
 export function loadScenarios(scenarioPaths) {
@@ -42,52 +43,69 @@ export function getModuleNameFromFilePath(filePath) {
   return moduleName;
 }
 
-export function createHotParrotMiddleware(scenarios, publish) {
-  const parrotRouter = express.Router();
-
-  const mountScenarios = () => {
-    if (parrotRouter.stack.length > 0) parrotRouter.stack = [];
-    parrotRouter.use(parrot(loadScenarios(scenarios)));
-  };
-
-  chokidar.watch(scenarios, { awaitWriteFinish: true })
-    .on('error', (error) => warn(`${printParrot()} - Watch error: ${error}`))
-    .on('ready', () => {
-      mountScenarios();
-      log(`${printParrot()} - Watching scenarios`);
-    })
+export function createWatcherEventsOnScenariosChange(watcher, { importScenarios, publish }) {
+  watcher
     .on('add', (fileName) => {
       const moduleName = getModuleNameFromFilePath(fileName);
-      log(`${printParrot()} - Scenarios for ${orange(`"${moduleName}"`)} has been added`);
-      mountScenarios();
+      log(printParrot(`Scenarios for ${orange(`"${moduleName}"`)} has been added`));
+      importScenarios();
       publish({ action: 'parrot:add', path: fileName, moduleName });
     })
     .on('change', (fileName) => {
       const moduleName = getModuleNameFromFilePath(fileName);
-      log(`${printParrot()} - Scenarios for "${moduleName}" has been changed`);
-      mountScenarios();
+      log(printParrot(`Scenarios for ${orange(`"${moduleName}"`)} has been changed`));
+      importScenarios();
       publish({ action: 'parrot:change', path: fileName, moduleName });
     })
     .on('unlink', (fileName) => {
       const moduleName = getModuleNameFromFilePath(fileName);
-      log(`${printParrot()} - Scenarios for "${moduleName}" has been removed`);
-      mountScenarios();
+      log(printParrot(`Scenarios for ${orange(`"${moduleName}"`)} has been removed`));
+      importScenarios();
       publish({ action: 'parrot:remove', path: fileName, moduleName });
+    });
+}
+
+export function createHotParrotMiddleware(scenarios, publish, serverAddress = '/') {
+  const parrotRouter = express.Router();
+
+  const importScenarios = () => {
+    if (parrotRouter.stack.length > 0) parrotRouter.stack = [];
+    const scenarioDefinitions = loadScenarios(scenarios);
+    // use parrot middleware with loaded scenarios
+    parrotRouter.use(parrot(scenarioDefinitions));
+    // print scenarios registered
+    info(printParrot(`Scenario routes registered: [\n${Object
+      .keys(scenarioDefinitions)
+      .map((key) => `\t"${key}" - ${yellow(
+        `"${joinUrlFragments(serverAddress, (scenarioDefinitions[key][0] || scenarioDefinitions[key]).request)}"`
+      )}`).join(',\n')
+    }\n  ]`));
+    return scenarioDefinitions;
+  };
+
+  const watcher = chokidar.watch(scenarios, { awaitWriteFinish: true })
+    .on('error', (error) => warn(printParrot(`Watch error: ${error}`)))
+    .on('ready', () => {
+      log(printParrot('Watching scenarios'));
+      importScenarios();
+      createWatcherEventsOnScenariosChange(watcher, { importScenarios, publish });
     });
 
   return parrotRouter;
 }
 
-export async function loadParrotMiddleware(app, { scenarios, useParrotMiddleware, publish }) {
+export async function loadParrotMiddleware(app, {
+  scenarios, useParrotMiddleware, publish, serverAddress,
+}) {
   debug('"useParrotMiddleware" was set to "%s"', useParrotMiddleware);
 
   if (useParrotMiddleware && scenarios.length > 0) {
-    debug(`${printParrot()} Loading scenarios %o`, scenarios);
-    await time(`${printParrot()} - initializing`, () => {
-      const parrotMiddleware = createHotParrotMiddleware(scenarios, publish);
+    debug(printParrot('Loading scenarios %o'), scenarios);
+    await time(printParrot('Initializing Parrot scenarios'), () => {
+      const parrotMiddleware = createHotParrotMiddleware(scenarios, publish, serverAddress);
       app.use(parrotMiddleware);
     });
   } else {
-    debug(`${printParrot()} Scenarios were not found`);
+    debug(printParrot('Scenarios were not found'));
   }
 }

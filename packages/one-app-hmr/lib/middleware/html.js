@@ -26,9 +26,9 @@ export function createHotModuleRenderingMiddleware({
   moduleMap,
   errorReportingUrl,
 }) {
+  // cache html in buffer, instead of re-rendering.
+  let html = '';
   const externals = getExternalsForScripts();
-  // TODO: cache html, instead of re-rendering.
-  // possibly remove in favor of static html (re-rendered if needed)
   return (req, res) => {
     const stats = getStatsFromResponse(res);
     const modules = getLocalModulesFromStats(stats, {
@@ -36,21 +36,22 @@ export function createHotModuleRenderingMiddleware({
       moduleMap,
     });
 
-    const html = renderDocument({
-      rootModuleName,
-      modules,
-      externals,
-      moduleMap,
-      errorReportingUrl,
-    });
+    // TODO: check stats for invalidation and update, html will go stale otherwise
+    if (!html) {
+      html = Buffer.from(renderDocument({
+        rootModuleName,
+        modules,
+        externals,
+        moduleMap,
+        errorReportingUrl,
+      }));
+    }
 
     debug(yellow(`Rendered HTML with local modules: [${green(modules.map(({ name }) => name).join(', '))}]`));
 
     res
       .status(200)
       .type('html')
-      .send(
-        html
-      );
+      .send(html);
   };
 }
