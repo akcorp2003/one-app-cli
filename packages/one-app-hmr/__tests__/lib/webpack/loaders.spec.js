@@ -41,7 +41,7 @@ describe('jsxLoader', () => {
       test: /\.jsx?$/,
       use: [
         {
-          loader: `${process.cwd()}/node_modules/babel-loader/lib/index.js`,
+          loader: require.resolve('babel-loader'),
           options: {
             babelrc: false,
             cacheDirectory: true,

@@ -14,11 +14,11 @@
 
 import webpack from 'webpack';
 import merge from 'webpack-merge';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 import {
   isDevelopment,
   getContextPath,
-  getStaticPath,
   getVendorsPath,
 } from '../utils';
 import { createOneAppExternals, createMinifyConfig } from './utility';
@@ -43,8 +43,8 @@ export function createDLLConfig({
           entry: { [dllName]: entries },
           externals,
           output: {
-            path: getStaticPath(),
-            filename: 'vendor/[name].js',
+            path: getVendorsPath(),
+            filename: '[name].js',
             library: dllName,
           },
           module: {
@@ -65,6 +65,13 @@ export function createDLLConfig({
           context: getContextPath(),
           name: dllName,
           path: manifestPathName,
+        }),
+        new BundleAnalyzerPlugin({
+          openAnalyzer: false,
+          generateStatsFile: false,
+          logLevel: 'silent',
+          analyzerMode: 'static',
+          reportFilename: getVendorsPath(`${dllName}-report.html`),
         }),
       ],
   };

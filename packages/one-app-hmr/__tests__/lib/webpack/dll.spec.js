@@ -15,10 +15,16 @@
 import {
   DllPlugin, DllReferencePlugin, validate,
 } from 'webpack';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 import { createDLLConfig } from '../../../lib/webpack/dll';
 
 describe('createDLLConfig', () => {
+  test('returns an invalid DLL webpack config by default', () => {
+    const config = createDLLConfig();
+    expect(() => validate(config)).toThrow();
+  });
+
   test('returns the DLL webpack config of the externals provided', () => {
     const config = createDLLConfig({
       entries: ['react'],
@@ -30,6 +36,13 @@ describe('createDLLConfig', () => {
         context: process.cwd(),
         path: `${process.cwd()}/static/vendor/.externals.dll.json`,
         name: 'externals',
+      }),
+      new BundleAnalyzerPlugin({
+        openAnalyzer: false,
+        generateStatsFile: false,
+        logLevel: 'silent',
+        analyzerMode: 'static',
+        reportFilename: `${process.cwd()}/static/vendor/externals-report.html`,
       }),
     ]);
   });
@@ -47,6 +60,13 @@ describe('createDLLConfig', () => {
         context: process.cwd(),
         path: `${process.cwd()}/static/vendor/.vendors.dll.json`,
         name: 'vendors',
+      }),
+      new BundleAnalyzerPlugin({
+        openAnalyzer: false,
+        generateStatsFile: false,
+        logLevel: 'silent',
+        analyzerMode: 'static',
+        reportFilename: `${process.cwd()}/static/vendor/vendors-report.html`,
       }),
     ]);
   });

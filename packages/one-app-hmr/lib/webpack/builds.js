@@ -17,6 +17,7 @@ import webpack from 'webpack';
 import { createOneAppExternals } from './utility';
 import { createDLLConfig } from './dll';
 import { error } from '../logs';
+import { vfs } from '../utils';
 
 // eslint-disable-next-line import/prefer-default-export
 export function buildExternalsDLL(config = {}) {
@@ -25,11 +26,13 @@ export function buildExternalsDLL(config = {}) {
   if (!(externals.length > 0)) return Promise.resolve();
 
   return new Promise((resolve, reject) => {
-    webpack(createDLLConfig({
+    const compiler = webpack(createDLLConfig({
       isDev: false,
       entries: externals,
       externals: createOneAppExternals(),
-    })).run((err, stats) => {
+    }));
+    compiler.outputFileSystem = vfs;
+    compiler.run((err, stats) => {
       if (err) {
         error(err);
         reject(err);

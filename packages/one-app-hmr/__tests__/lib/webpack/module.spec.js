@@ -16,7 +16,7 @@ import { validate } from 'webpack';
 import { createHotModuleWebpackConfig } from '../../../lib/webpack/module';
 
 describe('createHotModuleWebpackConfig', () => {
-  test('creates the webpack config for hot reloadable modules', () => {
+  test('creates the webpack config for Holocron re-loadable modules', () => {
     const modules = [{
       moduleName: 'hot-module',
       modulePath: 'hot-module/src/index.js',

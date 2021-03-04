@@ -15,6 +15,7 @@
 import path from 'path';
 import webpack from 'webpack';
 import merge from 'webpack-merge';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 
 import HotHolocronModulePlugin from './plugins/hot-holocron';
@@ -29,7 +30,9 @@ import {
   fileLoader,
 } from './loaders';
 import { createDLLConfig } from './dll';
-import { getContextPath, getModulesPath, getPublicModulesUrl } from '../utils';
+import {
+  getContextPath, getModulesPath, getPublicModulesUrl, getStaticPath,
+} from '../utils';
 import { libraryVarName } from '../constants';
 
 // eslint-disable-next-line import/prefer-default-export
@@ -103,6 +106,13 @@ export function createHotModuleWebpackConfig({
           overlay: {
             sockIntegration: 'whm',
           },
+        }),
+        new BundleAnalyzerPlugin({
+          openAnalyzer: false,
+          generateStatsFile: false,
+          logLevel: 'silent',
+          analyzerMode: 'static',
+          reportFilename: getStaticPath('sandbox-report.html'),
         }),
       ],
     }

@@ -16,7 +16,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/server';
 
 import Document from '../../../lib/components/Document';
-import { getPublicExternalsUrl, getPublicModulesUrl } from '../../../lib/utils';
+import { getPublicVendorsUrl, getPublicModulesUrl } from '../../../lib/utils';
 
 describe('Document', () => {
   test('renders the document without props', () => {
@@ -39,7 +39,7 @@ describe('Document', () => {
       ],
       externals: [
         {
-          src: getPublicExternalsUrl('vendors.js'),
+          src: getPublicVendorsUrl('vendors.js'),
         },
       ],
       moduleMap: {

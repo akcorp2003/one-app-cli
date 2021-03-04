@@ -34,12 +34,12 @@ jest.mock('webpack-hot-middleware/client', () => ({
   subscribe: jest.fn(),
 }));
 
-beforeEach(() => {
-  jest.clearAllMocks();
-});
-
 beforeAll(() => {
   jest.spyOn(console, 'log').mockImplementation(() => null);
+});
+
+beforeEach(() => {
+  jest.clearAllMocks();
 });
 
 describe('useHotMiddlewareSubscriber', () => {
