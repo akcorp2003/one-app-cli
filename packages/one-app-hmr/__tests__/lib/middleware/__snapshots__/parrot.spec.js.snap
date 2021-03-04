@@ -30,7 +30,7 @@ exports[`hot reloads parrot scenarios on error log the error 1`] = `
 Array [
   Array [
     "
-[38;2;255;165;0m[1m  one-app-hmr ::[22m[39m [33m(Warning)[39m [38;2;255;165;0m[38;2;255;20;147mparrot[39m[38;2;255;165;0m -  - Watch error: undefined[39m
+[38;2;255;165;0m[1m  one-app-hmr ::[22m[39m [33m(Warning)[39m [38;2;255;165;0m[38;2;255;20;147mparrot[39m[38;2;255;165;0m - Watch error: undefined[39m
 ",
   ],
 ]
